@@ -7,3 +7,9 @@ scope :api do
     end
   end
 end
+
+namespace :api, defaults: { format: :json } do
+  namespace :v1 do
+    get '/get_authorization_details', to: 'home#authorization_details'
+  end
+end

@@ -31,3 +31,6 @@
 
 en:
   hello: "Hello world"
+  missing_params: 'Params Missing (B001)'
+  internal_server_error: 'Internal server error'
+  record_not_found: 'Record Not Found'
