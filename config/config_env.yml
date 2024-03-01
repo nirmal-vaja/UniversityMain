@@ -1,2 +1,4 @@
 DB_USERNAME: 'postgres'
 DB_PASSWORD: 'root'
+GMAIL_USERNAME: 'examinationcontroller9@gmail.com'
+GMAIL_PASSWORD: 'jdnaahmyzqujytmd'

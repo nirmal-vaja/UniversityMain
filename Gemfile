@@ -74,3 +74,6 @@ gem 'devise'
 
 # Doorkeeper gem
 gem 'doorkeeper'
+
+# User Role Management
+gem 'rolify'

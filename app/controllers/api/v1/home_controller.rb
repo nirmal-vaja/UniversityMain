@@ -31,7 +31,7 @@ module Api
       def error_options
         {
           data: nil,
-          message: t('record_not_found')
+          message: I18n.t('record_not_found')
         }
       end
     end

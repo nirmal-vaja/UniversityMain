@@ -34,3 +34,5 @@ en:
   missing_params: 'Params Missing (B001)'
   internal_server_error: 'Internal server error'
   record_not_found: 'Record Not Found'
+  users:
+    super_admin_created: 'SuperAdmin has been created successfully'

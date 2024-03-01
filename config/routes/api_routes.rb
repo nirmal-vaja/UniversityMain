@@ -11,5 +11,12 @@ end
 namespace :api, defaults: { format: :json } do
   namespace :v1 do
     get '/get_authorization_details', to: 'home#authorization_details'
+    get '/check_login_status', to: 'users#check_login_status'
+
+    resources :users do
+      collection do
+        post :create_super_admin
+      end
+    end
   end
 end
