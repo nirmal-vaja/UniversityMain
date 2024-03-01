@@ -71,3 +71,6 @@ end
 
 # Devise gem
 gem 'devise'
+
+# Doorkeeper gem
+gem 'doorkeeper'
