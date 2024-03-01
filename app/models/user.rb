@@ -8,7 +8,16 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'is not a valid email address' }
+  validates :mobile_number,
+            format: { with: /\A(?:\+?\d{1,3}[-.●]?)?\d{9,15}\z/, message: 'is not a valid mobile number' }
+
+  # Associations
+  belongs_to :course, optional: true
+  belongs_to :branch, optional: true
+
   enum :gender, { male: 0, female: 1 }
+  enum user_type: { "Junior": 0, "Senior": 1 }
 
   # the authenticate method from devise documentation
   def self.authenticate(email, password)

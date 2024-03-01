@@ -10,9 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_01_124340) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_01_154434) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "branches", force: :cascade do |t|
+    t.bigint "course_id", null: false
+    t.string "name"
+    t.string "code"
+    t.integer "number_of_semesters", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_branches_on_course_id"
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "divisions", force: :cascade do |t|
+    t.integer "number"
+    t.string "name"
+    t.bigint "semester_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["semester_id"], name: "index_divisions_on_semester_id"
+  end
 
   create_table "oauth_access_tokens", force: :cascade do |t|
     t.bigint "resource_owner_id"
@@ -52,6 +77,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_01_124340) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "semesters", force: :cascade do |t|
+    t.bigint "branch_id", null: false
+    t.string "name"
+    t.integer "number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "number_of_divisions", default: 0
+    t.index ["branch_id"], name: "index_semesters_on_branch_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -67,6 +102,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_01_124340) do
     t.boolean "status", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "designation"
+    t.string "department"
+    t.datetime "date_of_joining"
+    t.bigint "course_id"
+    t.bigint "branch_id"
+    t.integer "user_type"
+    t.string "otp"
+    t.datetime "otp_generated_at"
+    t.boolean "show"
+    t.text "secure_id"
+    t.index ["branch_id"], name: "index_users_on_branch_id"
+    t.index ["course_id"], name: "index_users_on_course_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -79,6 +126,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_01_124340) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "branches", "courses"
+  add_foreign_key "divisions", "semesters"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "semesters", "branches"
+  add_foreign_key "users", "branches"
+  add_foreign_key "users", "courses"
 end
