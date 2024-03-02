@@ -8,6 +8,8 @@ class Semester < ApplicationRecord
   after_save :update_associated_divisions, if: :saved_change_to_number_of_divisions?
 
   def as_json(options = {})
+    options[:except] ||= %i[created_at updated_at]
+
     super(options).merge(
       divisions:
     )

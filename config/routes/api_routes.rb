@@ -23,5 +23,6 @@ namespace :api, defaults: { format: :json } do
     resources :branches
     resources :semesters
     resources :subjects
+    resources :students
   end
 end

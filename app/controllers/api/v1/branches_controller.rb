@@ -4,14 +4,16 @@ module Api
   module V1
     # BranchesController
     class BranchesController < ApiController
-      before_action :set_branch, only: %w[update destroy]
-
       def index
-        @branches = Branch.all
+        @branches = Branch.includes(semesters: :divisions).where(branch_params)
         success_response(branches_response)
       end
 
       private
+
+      def branch_params
+        params.require(:branch).permit(:course_id).to_h
+      end
 
       def branches_response
         { data: { branches: @branches }, message: I18n.t('branches.index') }

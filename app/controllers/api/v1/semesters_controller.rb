@@ -7,7 +7,7 @@ module Api
       before_action :set_semester, only: %w[update destroy]
 
       def index
-        @semesters = Semester.all
+        @semesters = Semester.includes(:divisions).where(semester_params)
         success_response(semesters_response)
       end
 

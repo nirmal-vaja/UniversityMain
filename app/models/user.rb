@@ -21,6 +21,20 @@ class User < ApplicationRecord
   enum :gender, { male: 0, female: 1 }
   enum user_type: { "Junior": 0, "Senior": 1 }
 
+  def as_json(options = {})
+    options[:except] ||= %i[show secure_id otp otp_generated_at status created_at updated_at date_of_joining]
+    options[:methods] ||= %i[full_name modified_date_of_joining]
+    super(options)
+  end
+
+  def modified_date_of_joining
+    date_of_joining.strftime('%Y/%m/%d')
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
   # the authenticate method from devise documentation
   def self.authenticate(email, password)
     user = User.find_for_authentication(email:)

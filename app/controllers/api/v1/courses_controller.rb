@@ -7,8 +7,8 @@ module Api
       before_action :set_course, only: %w[update destroy]
 
       def index
-        @courses = Course.all
-        success_response(courses_response)
+        @courses = Course.includes(branches: { semesters: :divisions })
+        success_response({ data: { courses: @courses }, message: I18n.t('courses.index') })
       end
 
       def create

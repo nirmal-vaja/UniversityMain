@@ -13,6 +13,8 @@ class Branch < ApplicationRecord
   after_save :update_associated_semesters, if: :saved_change_to_number_of_semesters?
 
   def as_json(options = {})
+    options[:except] ||= %i[created_at updated_at]
+
     super(options).merge(
       semesters:
     )

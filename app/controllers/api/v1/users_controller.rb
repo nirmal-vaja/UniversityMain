@@ -8,7 +8,7 @@ module Api
       before_action :set_user, only: %i[update destroy]
 
       def index
-        @users = User.without_role(:super_admin).where(user_params)
+        @users = User.without_role(:super_admin).where(show: true).where(user_params)
         success_response(users_response)
       end
 
@@ -70,6 +70,8 @@ module Api
       end
 
       def user_params
+        return nil unless params['user'].present?
+
         params.require(:user).permit(:first_name, :last_name, :mobile_number, :email, :gender,
                                      :contact_address, :permanent_address, :course_id, :branch_id,
                                      :user_type, :designation, :date_of_joining).to_h

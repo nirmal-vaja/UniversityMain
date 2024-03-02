@@ -66,3 +66,9 @@ en:
     created: 'Operation successfull'
     destroy: 'Operation successfull'
     record_not_found: 'Subject not found'
+  students:
+    index: 'List of Students'
+    update: 'Student updated successfully'
+    created: 'Operation successfull'
+    destroy: 'Operation successfull'
+    record_not_found: 'Student not found'
