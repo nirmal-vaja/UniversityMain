@@ -77,3 +77,6 @@ gem 'doorkeeper'
 
 # User Role Management
 gem 'rolify'
+
+# Amazon SDK S3
+gem 'aws-sdk-s3'
