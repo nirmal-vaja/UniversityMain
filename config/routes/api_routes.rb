@@ -18,5 +18,10 @@ namespace :api, defaults: { format: :json } do
         post :create_super_admin
       end
     end
+
+    resources :courses
+    resources :branches
+    resources :semesters
+    resources :subjects
   end
 end

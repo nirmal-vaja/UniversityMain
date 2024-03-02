@@ -5,6 +5,29 @@ module Api
     # Users Controller
     class UsersController < ApiController
       skip_before_action :doorkeeper_authorize!, only: %i[create_super_admin check_login_status]
+      before_action :set_user, only: %i[update destroy]
+
+      def index
+        @users = User.without_role(:super_admin).where(user_params)
+        success_response(users_response)
+      end
+
+      def create
+        @user = User.new(user_params)
+        @user.password = 'password'
+        @user.show = true
+        @user.add_role(:faculty)
+
+        handle_response(@user.save, I18n.t('users.created'))
+      end
+
+      def update
+        handle_response(@user.update(user_params), I18n.t('users.update'))
+      end
+
+      def destroy
+        handle_response(@user.destroy, I18n.t('users.destroy'))
+      end
 
       def check_login_status
         return error_response(not_logged_in_options) unless doorkeeper_token
@@ -18,7 +41,7 @@ module Api
 
       def create_super_admin
         superadmin_collection = User.with_role(:super_admin)
-        return superadmin_collection if superadmin_collection.any?
+        return success_response({ data: { super_admin: superadmin_collection.first } }) if superadmin_collection.any?
 
         user = User.new(user_params)
 
@@ -40,9 +63,28 @@ module Api
         { message: 'logged in', data: { logged_in: true } }
       end
 
+      def set_user
+        @user = User.find_by_id(params[:id])
+
+        error_response({ data: {}, error: I18n.t('users.record_not_found') }) if @user.nil?
+      end
+
       def user_params
-        params.require(:user).permit(:first_name, :last_name, :mobile_number, :email, :password, :gender,
-                                     :contact_address, :permanent_address).to_h
+        params.require(:user).permit(:first_name, :last_name, :mobile_number, :email, :gender,
+                                     :contact_address, :permanent_address, :course_id, :branch_id,
+                                     :user_type, :designation, :date_of_joining).to_h
+      end
+
+      def handle_response(success, success_message)
+        if success
+          success_response({ data: {}, message: success_message })
+        else
+          error_response({ error: @user.errors.full_messages.join(', ') })
+        end
+      end
+
+      def users_response
+        { data: { users: @users }, message: I18n.t('users.index') }
       end
 
       def perform_user_specific_tasks(user)

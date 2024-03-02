@@ -6,8 +6,17 @@ class Branch < ApplicationRecord
   belongs_to :course
   has_many :semesters, dependent: :destroy
 
+  # Validations
+  validates :code, uniqueness: { scope: :course_id }
+
   # Callbacks
   after_save :update_associated_semesters, if: :saved_change_to_number_of_semesters?
+
+  def as_json(options = {})
+    super(options).merge(
+      semesters:
+    )
+  end
 
   private
 
@@ -33,7 +42,7 @@ class Branch < ApplicationRecord
     end
   end
 
-  def destroy_semester(count)
+  def destroy_semesters(count)
     semesters.order(number: :desc).limit(count).destroy_all
   end
 end
