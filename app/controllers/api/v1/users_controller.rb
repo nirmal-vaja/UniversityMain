@@ -14,6 +14,7 @@ module Api
 
       def create
         @user = User.new(user_params)
+        @user.department = @user.branch.name
         @user.password = 'password'
         @user.show = true
         @user.add_role(:faculty)
@@ -74,7 +75,7 @@ module Api
 
         params.require(:user).permit(:first_name, :last_name, :mobile_number, :email, :gender,
                                      :contact_address, :permanent_address, :course_id, :branch_id,
-                                     :user_type, :designation, :date_of_joining).to_h
+                                     :user_type, :designation, :date_of_joining, :password).to_h
       end
 
       def handle_response(success, success_message)

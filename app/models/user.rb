@@ -16,8 +16,6 @@ class User < ApplicationRecord
   belongs_to :course, optional: true
   belongs_to :branch, optional: true
 
-  before_create :set_department
-
   enum :gender, { male: 0, female: 1 }
   enum user_type: { "Junior": 0, "Senior": 1 }
 
@@ -39,11 +37,5 @@ class User < ApplicationRecord
   def self.authenticate(email, password)
     user = User.find_for_authentication(email:)
     user&.valid_password?(password) ? user : nil
-  end
-
-  private
-
-  def set_department
-    self.department = branch.name
   end
 end
