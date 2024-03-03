@@ -80,3 +80,9 @@ gem 'rolify'
 
 # Amazon SDK S3
 gem 'aws-sdk-s3'
+
+# Pundit
+gem 'pundit'
+
+# ExcelSheet Handler
+gem 'roo', '~> 2.8'

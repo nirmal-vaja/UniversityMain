@@ -3,6 +3,7 @@
 # semester model
 class Semester < ApplicationRecord
   belongs_to :branch
+  has_many :subjects, dependent: :destroy
   has_many :divisions, dependent: :destroy
 
   after_save :update_associated_divisions, if: :saved_change_to_number_of_divisions?

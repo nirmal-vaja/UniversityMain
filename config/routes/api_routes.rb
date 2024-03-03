@@ -24,5 +24,6 @@ namespace :api, defaults: { format: :json } do
     resources :semesters
     resources :subjects
     resources :students
+    resources :excel_sheets
   end
 end

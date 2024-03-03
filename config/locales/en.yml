@@ -72,3 +72,6 @@ en:
     created: 'Operation successfull'
     destroy: 'Operation successfull'
     record_not_found: 'Student not found'
+  excel_sheets:
+    index: 'List of Excel Sheets'
+    created: 'ExcelSheel successfully imported.'
