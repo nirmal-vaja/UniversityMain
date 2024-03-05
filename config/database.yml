@@ -84,5 +84,3 @@ test:
 production:
   <<: *default
   database: university_main
-  username: postgres
-  password: root
