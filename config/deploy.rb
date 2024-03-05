@@ -99,8 +99,8 @@ namespace :deploy do # rubocop:disable Metrics/BlockLength
   before 'deploy:publishing', 'copy_production_rb'
 
   # before :starting,     :check_revision
-  after  :finishing,    :compile_assets
-  after  :finishing,    :cleanup
+  # after  :finishing,    :compile_assets
+  after  :finishing, :cleanup
   # after  :finishing,    :restart
 end
 
