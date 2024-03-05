@@ -74,6 +74,19 @@ namespace :deploy do # rubocop:disable Metrics/BlockLength
     end
   end
 
+  desc 'Precompile assets locally and upload to server'
+  task :precompile_assets do
+    on roles(:web) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, :exec, 'rake assets:precompile'
+        end
+      end
+    end
+  end
+
+  before 'deploy:restart', 'deploy:precompile_assets'
+
   desc 'Initial Deploy'
   task :initial do
     on roles(:app) do
