@@ -62,6 +62,15 @@ namespace :puma do
 end
 
 namespace :deploy do # rubocop:disable Metrics/BlockLength
+  desc 'Skip asset precompilation for API-only applications'
+  task :precompile_assets do
+    on roles(:app) do
+      info 'Skipping asset precompilation for API-only application'
+    end
+  end
+
+  before 'deploy:assets:precompile', 'deploy:precompile_assets'
+
   desc 'Make sure local git is in sync with remote.'
   task :check_revision do
     on roles(:app) do
@@ -78,16 +87,16 @@ namespace :deploy do # rubocop:disable Metrics/BlockLength
   task :initial do
     on roles(:app) do
       before 'deploy:restart', 'puma:start'
-      # invoke 'deploy'
+      invoke 'deploy'
     end
   end
 
-  # desc 'Restart application'
-  # task :restart do
-  #   on roles(:app), in: :sequence, wait: 5 do
-  #     invoke 'puma:restart'
-  #   end
-  # end
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      invoke 'puma:restart'
+    end
+  end
 
   desc 'Copy production.rb to the server'
   task :copy_production_rb do
