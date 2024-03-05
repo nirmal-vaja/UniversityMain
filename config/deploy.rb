@@ -74,33 +74,20 @@ namespace :deploy do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  desc 'Precompile assets locally and upload to server'
-  task :precompile_assets do
-    on roles(:web) do
-      within release_path do
-        with rails_env: fetch(:rails_env) do
-          execute :bundle, :exec, 'rake assets:precompile'
-        end
-      end
-    end
-  end
-
-  before 'deploy:restart', 'deploy:precompile_assets'
-
   desc 'Initial Deploy'
   task :initial do
     on roles(:app) do
       before 'deploy:restart', 'puma:start'
-      invoke 'deploy'
+      # invoke 'deploy'
     end
   end
 
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      invoke 'puma:restart'
-    end
-  end
+  # desc 'Restart application'
+  # task :restart do
+  #   on roles(:app), in: :sequence, wait: 5 do
+  #     invoke 'puma:restart'
+  #   end
+  # end
 
   desc 'Copy production.rb to the server'
   task :copy_production_rb do
