@@ -6,7 +6,7 @@ class ExcelImporter # rubocop:disable Metrics/ClassLength
     @sheet_attachment = sheet_attachment
   end
 
-  def create_course_and_branch # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength
+  def create_course_and_branch # rubocop:disable Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/MethodLength,Metrics/PerceivedComplexity
     data = open_sheet_file
     headers = nil
 
@@ -15,11 +15,16 @@ class ExcelImporter # rubocop:disable Metrics/ClassLength
 
       headers ||= construct_header(row)
 
+      return { error: 'Upload valid file.' } if row[1] != 'Course ' && (row[0] == 'Sr. no' || row[0] == 'Sr no.')
+
       next if row[0] == 'Sr. no'
 
       cb_data = Hash[headers.zip(row)]
 
       course = Course.find_or_initialize_by(name: cb_data['course'])
+
+      return { error: 'Course not found' } unless course
+
       res = create_branch(course, cb_data)
 
       return { error: course.errors.full_messages } if course.new_record? && course.errors.any?
@@ -38,6 +43,10 @@ class ExcelImporter # rubocop:disable Metrics/ClassLength
       next if row.compact.empty?
 
       headers ||= construct_header(row)
+
+      if row[4] != 'No Of Divisions' && (row[0] == 'Sr. no' || row[0] == 'Sr no.')
+        return { error: 'Upload valid file.' }
+      end
 
       next if row[0] == 'Sr. no'
 

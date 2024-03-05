@@ -9,6 +9,11 @@ module Api
         success_response({ data: { excel_sheets: @excel_sheets }, message: I18n.t('excel_sheets.index') })
       end
 
+      def uploaded_sheets_name
+        @excel_sheet_names = ExcelSheet.all.pluck(:name)
+        success_response({ data: { names: @excel_sheet_names } })
+      end
+
       def create # rubocop:disable Metrics/MethodLength
         @excel_sheet = ExcelSheet.find_or_initialize_by(excel_sheet_params.except(:sheet))
         authorize @excel_sheet
@@ -22,6 +27,17 @@ module Api
           end
         else
           error_response({ message: @excel_sheet.errors.full_messages.join(', ') })
+        end
+      end
+
+      def destroy
+        @excel_sheet = ExcelSheet.find_by_id(params[:id])
+        return error_response({ data: 'Excel Sheet not found' }) unless @excel_sheet
+
+        if @excel_sheet.destroy
+          success_response({ message: I18n.t('excel_sheets.destroy') })
+        else
+          error_response({ error: @excel_sheet.errors.full_messages.join(', ') })
         end
       end
 

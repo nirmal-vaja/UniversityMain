@@ -5,6 +5,7 @@ class Branch < ApplicationRecord
   # associations
   belongs_to :course
   has_many :semesters, dependent: :destroy
+  has_many :users, dependent: :destroy
 
   # Validations
   validates :code, uniqueness: { scope: :course_id }

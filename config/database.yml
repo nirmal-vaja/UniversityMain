@@ -83,6 +83,6 @@ test:
 #
 production:
   <<: *default
-  database: UniversityMain_production
-  username: UniversityMain
-  password: <%= ENV["UNIVERSITYMAIN_DATABASE_PASSWORD"] %>
+  database: university_main
+  username: postgres
+  password: root

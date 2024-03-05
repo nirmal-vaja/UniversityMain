@@ -8,14 +8,28 @@ scope :api do
   end
 end
 
-namespace :api, defaults: { format: :json } do
-  namespace :v1 do
+namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLength
+  namespace :v1 do # rubocop:disable Metrics/BlockLength
     get '/get_authorization_details', to: 'home#authorization_details'
     get '/check_login_status', to: 'users#check_login_status'
 
     resources :users do
       collection do
+        get :find_user
+        get :assigned_role_users
+        get :faculty_names
         post :create_super_admin
+      end
+
+      member do
+        post :assign_role
+        post :revoke_role
+      end
+    end
+
+    resources :roles do
+      collection do
+        get :fetch_roles
       end
     end
 
@@ -24,6 +38,10 @@ namespace :api, defaults: { format: :json } do
     resources :semesters
     resources :subjects
     resources :students
-    resources :excel_sheets
+    resources :excel_sheets do
+      collection do
+        get :uploaded_sheets_name
+      end
+    end
   end
 end

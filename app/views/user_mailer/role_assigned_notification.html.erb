@@ -1,0 +1,7 @@
+<p>Hello <%= @user.full_name %>!</p>
+<p>Greetings, You have been assigned as <%= @role_name %>, Below are the credentials you can use to login as <%= @role_name %> </p>
+<p><%= "Email : " + @user.email %></p>
+<p> Enter the above mentional email as input at the login page and click on "Send OTP", you will be receiving an OTP via your email. </p>
+<p> <a href="<%= @url %>"> Click here to login </a></p>
+<p> Please make sure this mail contains confidential information, do not forward or share with anyone. </p>
+<p> Thank You! </p>

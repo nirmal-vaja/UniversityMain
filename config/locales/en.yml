@@ -41,6 +41,7 @@ en:
     update: 'Operation Successfull'
     destroy: 'Operation Successfull'
     super_admin_created: 'SuperAdmin has been created successfully'
+    role_assigned: 'Roles has been assigned to the user'
     record_not_found: 'User not found'
   courses:
     index: 'List of Courses'
@@ -74,4 +75,5 @@ en:
     record_not_found: 'Student not found'
   excel_sheets:
     index: 'List of Excel Sheets'
-    created: 'ExcelSheel successfully imported.'
+    created: 'ExcelSheet successfully imported.'
+    destroy: 'ExcelSheet deleted.'

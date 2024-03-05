@@ -9,4 +9,11 @@ class UserMailer < ApplicationMailer
     @token = token
     mail(to: @email, subject: "#{@university} has been registered.")
   end
+
+  def role_assigned_notification(user, opts = {})
+    @user = user
+    @role_name = opts[:role_name]
+    @url = opts[:url]
+    mail(to: @user.email, subject: "You have been assigned as #{@role_name}!")
+  end
 end
