@@ -71,6 +71,8 @@ namespace :deploy do # rubocop:disable Metrics/BlockLength
 
   before 'deploy:assets:precompile', 'deploy:precompile_assets'
 
+  Rake::Task['deploy:assets:precompile'].clear_actions
+
   desc 'Make sure local git is in sync with remote.'
   task :check_revision do
     on roles(:app) do
