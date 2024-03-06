@@ -108,7 +108,7 @@ module Api
       def assign_role
         @user.add_role(@role_name)
         if @user.has_role?(@role_name)
-          @user.send_role_assigned_notification(role_name: @role_name, url: params[:url])
+          UserMailer.role_assigned_notification(@user, { role_name: @role_name, url: params[:url] })
           success_response({ data: {}, message: I18n.t('users.role_assigned') })
         else
           error_response({ error: 'Role not assigned' })
