@@ -6,7 +6,8 @@ module Api
     class ExcelSheetsController < ApiController
       def index
         @excel_sheets = ExcelSheet.all
-        success_response({ data: { excel_sheets: @excel_sheets }, message: I18n.t('excel_sheets.index') })
+        success_response({ data: { excel_sheets: @excel_sheets, excel_sheet_names: @excel_sheets.pluck(:name) },
+                           message: I18n.t('excel_sheets.index') })
       end
 
       def uploaded_sheets_name

@@ -4,15 +4,42 @@ module Api
   module V1
     # BranchesController
     class BranchesController < ApiController
+      before_action :set_branch, only: %i[update destroy]
+
       def index
         @branches = Branch.includes(semesters: :divisions).where(branch_params)
         success_response(branches_response)
       end
 
+      def all_branches
+        @branches = Branch.all
+        success_response(branches_response)
+      end
+
+      def update
+        if @branch.update(branch_params)
+          success_response({ data: {}, message: 'branches.update_record' })
+        else
+          error_response({ error: @branch.errors.full_messages.join(', ') })
+        end
+      end
+
+      def destroy
+        if @branch.destroy
+          success_response({ data: {}, message: 'branches.destroy_record' })
+        else
+          error_response({ error: @branch.errors.full_messages.join(', ') })
+        end
+      end
+
       private
 
+      def set_branch
+        @branch = Branch.find_by_id(params[:id])
+      end
+
       def branch_params
-        params.require(:branch).permit(:course_id).to_h
+        params.require(:branch).permit(:course_id, :code, :number_of_semesters).to_h
       end
 
       def branches_response

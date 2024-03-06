@@ -55,9 +55,11 @@ en:
     created: 'Operation successfull'
     destroy: 'Operation successfull'
     record_not_found: 'Branch not found'
+    update_record: 'Record updated successfully'
+    destroy_record: 'Record has been deleted'
   semesters:
     index: 'List of Semesters'
-    update: 'Semester updated successfully'
+    update: 'Record updated successfully'
     created: 'Operation successfull'
     destroy: 'Operation successfull'
     record_not_found: 'Semester not found'

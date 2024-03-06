@@ -17,6 +17,7 @@ class Branch < ApplicationRecord
     options[:except] ||= %i[created_at updated_at]
 
     super(options).merge(
+      course_name: course.name,
       semesters:
     )
   end

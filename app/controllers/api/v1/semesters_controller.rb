@@ -15,6 +15,10 @@ module Api
         handle_response(@semester.update(semester_params), I18n.t('semesters.update'))
       end
 
+      def destroy
+        handle_response(@semester.destroy, I18n.t('semesters.destroy'))
+      end
+
       private
 
       def set_semester
