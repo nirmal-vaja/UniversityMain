@@ -4,7 +4,7 @@ module Api
   module V1
     # Users Controller
     class UsersController < ApiController # rubocop:disable Metrics/ClassLength
-      skip_before_action :doorkeeper_authorize!, only: %i[create_super_admin check_login_status]
+      skip_before_action :doorkeeper_authorize!, only: %i[create_super_admin check_login_status send_otp]
       before_action :set_user, only: %i[update destroy assign_role revoke_role]
       before_action :set_role_name, only: %i[assign_role revoke_role]
 
@@ -126,10 +126,31 @@ module Api
                          error: "Unable to revoke role '#{@role_name}' from #{user.full_name}. Please try again!" })
       end
 
+      def send_otp
+        @user = User.find_by_email(params[:email])
+        return error_response({ error: 'User with email you provided not found.' }) unless @user.present?
+
+        @role = @user.find_role_other_than_faculty
+        if @role
+          generate_and_send_otp
+        else
+          error_response({ error: 'No roles are assigned to you yet. Contact your admin to assign you some.' })
+        end
+      end
+
       private
 
       def not_logged_in_options
         { message: 'not logged in', data: { logged_in: false } }
+      end
+
+      def generate_and_send_otp
+        if @user.generate_otp
+          @user.send_otp_email
+          success_response({ data: { otp: @user.otp }, message: 'OTP has been sent to the entered email.' })
+        else
+          error_response({ error: 'Something went wrong generating otp, please try again' })
+        end
       end
 
       def logged_in_options

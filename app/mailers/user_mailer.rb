@@ -16,4 +16,9 @@ class UserMailer < ApplicationMailer
     @url = opts[:url]
     mail(to: @user.email, subject: "You have been assigned as #{@role_name}!")
   end
+
+  def send_otp_mail(user)
+    @user = user
+    mail(to: @user.email, subject: 'You recieved an OTP')
+  end
 end

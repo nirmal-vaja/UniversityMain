@@ -51,10 +51,56 @@ class User < ApplicationRecord
     UserMailer.role_assigned_notification(self, extra_params).deliver_now
   end
 
+  def find_role_other_than_faculty
+    roles.where.not(name: 'faculty').first
+  end
+
+  def generate_otp
+    self.otp = [1, 2, 3, 4, 5, 6, 7, 8, 9].sample(6).join('')
+    self.otp_generated_at = Time.current
+    save
+  end
+
+  def send_otp_email
+    UserMailer.send_otp_mail(self).deliver_now
+  end
+
+  def valid_otp?(otp)
+    self.otp == otp
+  end
+
+  def generate_doorkeeper_token
+    Doorkeeper::AccessToken.create!(
+      resource_owner_id: id,
+      application_id: Doorkeeper::Application.first.id,
+      expires_in: Doorkeeper.configuration.access_token_expires_in,
+      scopes: Doorkeeper.configuration.default_scopes
+    )
+  end
+
   # the authenticate method from devise documentation
-  def self.authenticate(email, password)
+  def self.authenticate(email, password, otp = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/PerceivedComplexity
     user = User.find_for_authentication(email:)
-    user&.valid_password?(password) ? user : nil
+    if user
+      if otp.nil?
+        user.valid_password?(password) ? user : nil
+      else
+        role = user.roles.where.not(name: 'faculty').first
+        if role
+          @user = if role.name == 'Marks Entry' # rubocop:disable Metrics/BlockNesting
+                    user
+                  else
+                    User.where(course_id: user.course_id).with_role(role.name).last
+                  end
+          if @user.valid_otp?(otp) # rubocop:disable Metrics/BlockNesting
+            @user.generate_doorkeeper_token
+            user
+          end
+        end
+      end
+    else # rubocop:disable Style/EmptyElse
+      nil
+    end
   end
 
   private

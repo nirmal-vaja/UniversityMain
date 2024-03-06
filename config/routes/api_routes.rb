@@ -19,6 +19,7 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
         get :assigned_role_users
         get :faculty_names
         post :create_super_admin
+        post :send_otp
       end
 
       member do

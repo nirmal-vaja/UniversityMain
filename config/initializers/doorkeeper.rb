@@ -6,7 +6,13 @@ Doorkeeper.configure do
   orm :active_record
 
   resource_owner_from_credentials do
-    User.authenticate(params[:email], params[:password])
+    user = if params[:email].present? && params[:otp].present?
+             User.authenticate(params[:email], params[:password], params[:otp])
+           else
+             User.authenticate(params[:email], params[:password])
+           end
+
+    user
   end
 
   # enable password grant
