@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_02_134617) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -101,6 +101,26 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_02_134617) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["semester_id"], name: "index_divisions_on_semester_id"
+  end
+
+  create_table "examination_names", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "examination_times", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "examination_types", force: :cascade do |t|
+    t.string "name"
+    t.integer "maximum_marks"
+    t.integer "max_students_per_block"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "excel_sheets", force: :cascade do |t|

@@ -79,3 +79,19 @@ en:
     index: 'List of Excel Sheets'
     created: 'ExcelSheet successfully imported.'
     destroy: 'ExcelSheet deleted.'
+  examination_names:
+    create: 'Examination name created successfully.'
+    update: 'Examination name updated successfully.'
+    destroy: 'Examination name deleted successfully.'
+    not_foud: 'Record not found'
+  examination_times:
+    create: 'Examination time created successfully.'
+    update: 'Examination time updated successfully.'
+    destroy: 'Examination time deleted successfully.'
+    not_foud: 'Record not found'
+  examination_times:
+    create: 'Examination type created successfully.'
+    update: 'Examination type updated successfully.'
+    destroy: 'Examination type deleted successfully.'
+    not_foud: 'Record not found'
+  
