@@ -56,7 +56,7 @@ class User < ApplicationRecord
   end
 
   def generate_otp
-    self.otp = [1..9].sample(6).join('')
+    self.otp = [1, 2, 3, 4, 5, 6, 7, 8, 9].sample(6).join('')
     self.otp_generated_at = Time.current
     save
   end
@@ -79,7 +79,7 @@ class User < ApplicationRecord
   end
 
   # the authenticate method from devise documentation
-  def self.authenticate(email, password, otp = nil) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/PerceivedComplexity
+  def self.authenticate(email, password, otp = nil) # rubocop:disable Metrics/MethodLength,Metrics/PerceivedComplexity
     user = User.find_for_authentication(email:)
     if user
       if otp.nil?
