@@ -56,7 +56,6 @@ module Api
         return success_response({ data: { super_admin: superadmin_collection.first } }) if superadmin_collection.any?
 
         user = User.new(user_params)
-
         if user.save
           perform_user_specific_tasks(user)
           success_response(success_options)
@@ -189,9 +188,16 @@ module Api
 
       def perform_user_specific_tasks(user)
         user.add_role(:super_admin)
+        create_default_roles
         token = user.send(:set_reset_password_token)
         UserMailer.send_university_registration_mail(user.email, params[:university], params[:university_url],
                                                      token).deliver_now
+      end
+
+      def create_default_roles
+        ['Examination Controller', 'Student Coordinator', 'Academic Head', 'HOD', 'Marks Entry'].each do |role|
+          Role.find_or_create_by!(name: role)
+        end
       end
 
       def success_options
