@@ -56,7 +56,7 @@ class User < ApplicationRecord
   end
 
   def generate_otp
-    self.otp = [1, 2, 3, 4, 5, 6, 7, 8, 9].sample(6).join('')
+    self.otp = [1..9].sample(6).join('')
     self.otp_generated_at = Time.current
     save
   end
@@ -85,7 +85,7 @@ class User < ApplicationRecord
       if otp.nil?
         user.valid_password?(password) ? user : nil
       else
-        role = user.roles.where.not(name: 'faculty').first
+        role = user.find_role_other_than_faculty
         if role
           @user = if role.name == 'Marks Entry' # rubocop:disable Metrics/BlockNesting
                     user
