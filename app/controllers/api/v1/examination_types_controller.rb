@@ -40,7 +40,7 @@ module Api
       end
 
       def examination_type_params
-        params.require(:examination_type).permit(:name).to_h
+        params.require(:examination_type).permit(:name, :maximum_marks, :max_students_per_block).to_h
       end
     end
   end
