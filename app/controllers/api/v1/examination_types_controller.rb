@@ -13,18 +13,22 @@ module Api
 
       def create
         @examination_type = ExaminationType.new(examination_type_params)
-        success_response({ message: 'examination_types.create' }) if @examination_type.save
+        return success_response({ message: 'examination_types.create' }) if @examination_type.save
 
         error_response({ error: @examination_type.errors.full_messages.join(', ') })
       end
 
       def update
-        success_response({ message: 'examination_types.update' }) if @examination_type.update(examination_type_params)
+        if @examination_type.update(examination_type_params)
+          return success_response({ message: 'examination_types.update' })
+        end
+
         error_response({ error: @examination_type.errors.full_messages.join(', ') })
       end
 
       def destroy
-        success_response({ message: 'examination_types.destroy' }) if @examination_type.destroy
+        return success_response({ message: 'examination_types.destroy' }) if @examination_type.destroy
+
         error_response({ error: @examintion_name.errors.full_messages.join(', ') })
       end
 

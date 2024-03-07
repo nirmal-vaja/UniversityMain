@@ -13,18 +13,22 @@ module Api
 
       def create
         @examination_time = ExaminationTime.new(examination_time_params)
-        success_response({ message: 'examination_times.create' }) if @examination_time.save
+        return success_response({ message: 'examination_times.create' }) if @examination_time.save
 
         error_response({ error: @examination_time.errors.full_messages.join(', ') })
       end
 
       def update
-        success_response({ message: 'examination_times.update' }) if @examination_time.update(examination_time_params)
+        if @examination_time.update(examination_time_params)
+          return success_response({ message: 'examination_times.update' })
+        end
+
         error_response({ error: @examination_time.errors.full_messages.join(', ') })
       end
 
       def destroy
-        success_response({ message: 'examination_times.destroy' }) if @examination_time.destroy
+        return success_response({ message: 'examination_times.destroy' }) if @examination_time.destroy
+
         error_response({ error: @examintion_name.errors.full_messages.join(', ') })
       end
 
