@@ -90,7 +90,7 @@ en:
     update: 'Examination time updated successfully.'
     destroy: 'Examination time deleted successfully.'
     not_found: 'Record not found'
-  examination_times:
+  examination_types:
     create: 'Examination type created successfully.'
     update: 'Examination type updated successfully.'
     destroy: 'Examination type deleted successfully.'
