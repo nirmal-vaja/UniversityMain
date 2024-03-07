@@ -2,10 +2,15 @@
 
 # Student Model
 class Student < ApplicationRecord
+  include DefaultJsonOptions
+
   belongs_to :course
   belongs_to :branch
   belongs_to :semester
   belongs_to :division
+
+  has_many :student_blocks, dependent: :destroy
+  has_many :examination_blocks, through: :student_blocks
 
   scope :fees_paid, -> { where(fees_paid: true) }
   scope :fees_unpaid, -> { where(fees_paid: false) }

@@ -2,6 +2,8 @@
 
 # ExcelSheet model
 class ExcelSheet < ApplicationRecord
+  include DefaultJsonOptions
+
   has_one_attached :sheet, dependent: :destroy
 
   validates_presence_of :sheet, :name

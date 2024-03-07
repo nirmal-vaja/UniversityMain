@@ -2,6 +2,8 @@
 
 # Division Model
 class Division < ApplicationRecord
+  include DefaultJsonOptions
+
   belongs_to :semester
 
   def as_json(options = {})

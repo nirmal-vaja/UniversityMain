@@ -2,6 +2,8 @@
 
 # Contact Detail Model
 class ContactDetail < ApplicationRecord
+  include DefaultJsonOptions
+
   belongs_to :student
 
   validates :personal_email_address, presence: true

@@ -2,6 +2,8 @@
 
 # branch model
 class Branch < ApplicationRecord
+  include DefaultJsonOptions
+
   # associations
   belongs_to :course
   has_many :semesters, dependent: :destroy

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_06_210958) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,21 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
     t.index ["student_id"], name: "index_address_details_on_student_id"
   end
 
+  create_table "block_extra_configs", force: :cascade do |t|
+    t.string "examination_name"
+    t.string "academic_year"
+    t.bigint "course_id", null: false
+    t.date "examination_date"
+    t.string "examination_time"
+    t.integer "number_of_extra_jr_supervisions", default: 0
+    t.integer "number_of_extra_sr_supervision", default: 0
+    t.string "examination_type"
+    t.integer "number_of_supervisions", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_block_extra_configs_on_course_id"
+  end
+
   create_table "branches", force: :cascade do |t|
     t.bigint "course_id", null: false
     t.string "name"
@@ -103,6 +118,48 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
     t.index ["semester_id"], name: "index_divisions_on_semester_id"
   end
 
+  create_table "exam_time_tables", force: :cascade do |t|
+    t.string "examination_name"
+    t.string "examination_time"
+    t.string "examination_type"
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.bigint "semester_id", null: false
+    t.bigint "subject_id", null: false
+    t.string "academic_year"
+    t.date "examination_date"
+    t.integer "day", default: 3
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_exam_time_tables_on_branch_id"
+    t.index ["course_id"], name: "index_exam_time_tables_on_course_id"
+    t.index ["semester_id"], name: "index_exam_time_tables_on_semester_id"
+    t.index ["subject_id"], name: "index_exam_time_tables_on_subject_id"
+  end
+
+  create_table "examination_blocks", force: :cascade do |t|
+    t.string "examination_name"
+    t.string "academic_year"
+    t.integer "number_of_students", default: 0
+    t.string "examination_type"
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.bigint "exam_time_table_id", null: false
+    t.integer "capacity", default: 0
+    t.string "name"
+    t.date "examination_date"
+    t.string "examination_time"
+    t.bigint "subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "block_extra_config_id"
+    t.index ["block_extra_config_id"], name: "index_examination_blocks_on_block_extra_config_id"
+    t.index ["branch_id"], name: "index_examination_blocks_on_branch_id"
+    t.index ["course_id"], name: "index_examination_blocks_on_course_id"
+    t.index ["exam_time_table_id"], name: "index_examination_blocks_on_exam_time_table_id"
+    t.index ["subject_id"], name: "index_examination_blocks_on_subject_id"
+  end
+
   create_table "examination_names", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -117,8 +174,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
 
   create_table "examination_types", force: :cascade do |t|
     t.string "name"
-    t.integer "maximum_marks"
-    t.integer "max_students_per_block"
+    t.integer "maximum_marks", default: 30
+    t.integer "max_students_per_block", default: 30
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -217,6 +274,21 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
     t.index ["branch_id"], name: "index_semesters_on_branch_id"
   end
 
+  create_table "student_blocks", force: :cascade do |t|
+    t.bigint "examination_block_id", null: false
+    t.bigint "student_id", null: false
+    t.string "examination_name"
+    t.string "academic_year"
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_student_blocks_on_branch_id"
+    t.index ["course_id"], name: "index_student_blocks_on_course_id"
+    t.index ["examination_block_id"], name: "index_student_blocks_on_examination_block_id"
+    t.index ["student_id"], name: "index_student_blocks_on_student_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "name"
     t.string "enrollment_number"
@@ -264,6 +336,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
     t.index ["semester_id"], name: "index_subjects_on_semester_id"
   end
 
+  create_table "time_table_block_wise_reports", force: :cascade do |t|
+    t.string "examination_name"
+    t.string "academic_year"
+    t.integer "number_of_students", default: 0
+    t.string "examination_type"
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.bigint "semester_id", null: false
+    t.bigint "exam_time_table_id", null: false
+    t.integer "number_of_blocks", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_time_table_block_wise_reports_on_branch_id"
+    t.index ["course_id"], name: "index_time_table_block_wise_reports_on_course_id"
+    t.index ["exam_time_table_id"], name: "index_time_table_block_wise_reports_on_exam_time_table_id"
+    t.index ["semester_id"], name: "index_time_table_block_wise_reports_on_semester_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -306,14 +396,28 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "address_details", "students"
+  add_foreign_key "block_extra_configs", "courses"
   add_foreign_key "branches", "courses"
   add_foreign_key "contact_details", "students"
   add_foreign_key "divisions", "semesters"
+  add_foreign_key "exam_time_tables", "branches"
+  add_foreign_key "exam_time_tables", "courses"
+  add_foreign_key "exam_time_tables", "semesters"
+  add_foreign_key "exam_time_tables", "subjects"
+  add_foreign_key "examination_blocks", "block_extra_configs"
+  add_foreign_key "examination_blocks", "branches"
+  add_foreign_key "examination_blocks", "courses"
+  add_foreign_key "examination_blocks", "exam_time_tables"
+  add_foreign_key "examination_blocks", "subjects"
   add_foreign_key "guardian_details", "students"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "parent_details", "students"
   add_foreign_key "semesters", "branches"
+  add_foreign_key "student_blocks", "branches"
+  add_foreign_key "student_blocks", "courses"
+  add_foreign_key "student_blocks", "examination_blocks"
+  add_foreign_key "student_blocks", "students"
   add_foreign_key "students", "branches"
   add_foreign_key "students", "courses"
   add_foreign_key "students", "divisions"
@@ -321,6 +425,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_124412) do
   add_foreign_key "subjects", "branches"
   add_foreign_key "subjects", "courses"
   add_foreign_key "subjects", "semesters"
+  add_foreign_key "time_table_block_wise_reports", "branches"
+  add_foreign_key "time_table_block_wise_reports", "courses"
+  add_foreign_key "time_table_block_wise_reports", "exam_time_tables"
+  add_foreign_key "time_table_block_wise_reports", "semesters"
   add_foreign_key "users", "branches"
   add_foreign_key "users", "courses"
 end

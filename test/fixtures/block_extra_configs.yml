@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  examination_name: MyString
+  academic_year: MyString
+  course: one
+  examination_date: 2024-03-06
+  examination_time: MyString
+  number_of_extra_jr_supervisions: 1
+  number_of_extra_sr_supervision: 1
+  examination_type: MyString
+  number_of_supervisions: 1
+
+two:
+  examination_name: MyString
+  academic_year: MyString
+  course: two
+  examination_date: 2024-03-06
+  examination_time: MyString
+  number_of_extra_jr_supervisions: 1
+  number_of_extra_sr_supervision: 1
+  examination_type: MyString
+  number_of_supervisions: 1

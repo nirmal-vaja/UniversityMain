@@ -2,6 +2,8 @@
 
 # course model
 class Course < ApplicationRecord
+  include DefaultJsonOptions
+
   has_many :branches, dependent: :destroy
   has_many :users, dependent: :destroy
 

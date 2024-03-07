@@ -6,6 +6,8 @@ class Subject < ApplicationRecord
   belongs_to :course
   belongs_to :branch
 
+  has_many :exam_time_tables, dependent: :destroy
+
   def update_attributes_if_changes(new_attributes)
     assign_attributes(new_attributes)
 

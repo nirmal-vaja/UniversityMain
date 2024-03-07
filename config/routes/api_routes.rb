@@ -42,10 +42,21 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
     end
     resources :semesters
     resources :subjects
-    resources :students
+    resources :students do
+      collection do
+        get :unassigned_students
+      end
+    end
     resources :excel_sheets do
       collection do
         get :uploaded_sheets_name
+      end
+    end
+
+    resources :exam_time_tables do
+      collection do
+        get :unique_examination_dates # get_examination_dates
+        get :exam_related_subjects # fetch_subjects
       end
     end
   end

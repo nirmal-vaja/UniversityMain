@@ -2,6 +2,8 @@
 
 # semester model
 class Semester < ApplicationRecord
+  include DefaultJsonOptions
+
   belongs_to :branch
   has_many :subjects, dependent: :destroy
   has_many :divisions, dependent: :destroy

@@ -69,6 +69,7 @@ en:
     created: 'Operation successfull'
     destroy: 'Operation successfull'
     record_not_found: 'Subject not found'
+    records_not_found: 'Subjects not found'
   students:
     index: 'List of Students'
     update: 'Student updated successfully'
@@ -94,4 +95,7 @@ en:
     update: 'Examination type updated successfully.'
     destroy: 'Examination type deleted successfully.'
     not_foud: 'Record not found'
+  exam_time_tables:
+    created: 'ExamTimeTable has been created successfully.'
+    updated: 'ExamTimeTable has been updated successfully.'
   

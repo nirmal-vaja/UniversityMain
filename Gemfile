@@ -92,3 +92,6 @@ gem 'pundit'
 
 # ExcelSheet Handler
 gem 'roo', '~> 2.8'
+
+# Pagination Gem
+gem 'pagy'

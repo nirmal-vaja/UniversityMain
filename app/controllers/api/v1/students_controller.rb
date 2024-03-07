@@ -25,6 +25,20 @@ module Api
         handle_response(@student.destroy, I18n.t('students.destroy'))
       end
 
+      def unassigned_students
+        page = params[:page] || 1
+        items_per_page = params[:items_per_page]
+
+        unassigned_students = fetch_unassigned_students
+
+        if unassigned_students.present?
+          @pagy, @students = pagy(unassigned_students, page:, items: items_per_page)
+          success_response(data: { students: @students, page: pagy_metadata(@pagy) })
+        else
+          error_response(error: 'You have already assigned students.')
+        end
+      end
+
       private
 
       def set_student
@@ -37,6 +51,10 @@ module Api
         params.require(:student).permit(:name, :enrollment_number, :course_id, :branch_id, :semester_id, :division_id,
                                         :father_name, :mother_name, :date_of_birth, :birth_place, :religion,
                                         :caste, :blood_group, :gender).to_h
+      end
+
+      def student_block_params
+        params.require(:student).permit(:examination_name, :course_id, :branch_id, :academic_year).to_h
       end
 
       def update_attributes
@@ -64,6 +82,14 @@ module Api
 
       def students_response
         { data: { students: @students }, message: I18n.t('students.index') }
+      end
+
+      def fetch_unassigned_students
+        Student.fees_paid.where(student_params).where.not(id: assigned_student_ids)
+      end
+
+      def assigned_student_ids
+        StudentBlock.where(student_block_params).pluck(:student_id).uniq
       end
     end
   end
