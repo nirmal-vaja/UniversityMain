@@ -13,21 +13,21 @@ module Api
 
       def create
         @examination_name = ExaminationName.new(examination_name_params)
-        return success_response({ message: 'examination_names.create' }) if @examination_name.save
+        return success_response({ message: I18n.t('examination_names.create') }) if @examination_name.save
 
         error_response({ error: @examination_name.errors.full_messages.join(', ') })
       end
 
       def update
         if @examination_name.update(examination_name_params)
-          return success_response({ message: 'examination_names.update' })
+          return success_response({ message: I18n.t('examination_names.update') })
         end
 
         error_response({ error: @examination_name.errors.full_messages.join(', ') })
       end
 
       def destroy
-        return success_response({ message: 'examination_names.destroy' }) if @examination_name.destroy
+        return success_response({ message: I18n.t('examination_names.destroy') }) if @examination_name.destroy
 
         error_response({ error: @examintion_name.errors.full_messages.join(', ') })
       end
@@ -36,7 +36,7 @@ module Api
 
       def set_examination_name
         @examination_name = ExaminationName.find_by_id(params[:id])
-        error_response({ error: 'examination_names.not_found' }) unless @examination_name
+        error_response({ error: I18n.t('examination_names.not_found') }) unless @examination_name
       end
 
       def examination_name_params

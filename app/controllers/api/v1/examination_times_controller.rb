@@ -13,21 +13,21 @@ module Api
 
       def create
         @examination_time = ExaminationTime.new(examination_time_params)
-        return success_response({ message: 'examination_times.create' }) if @examination_time.save
+        return success_response({ message: I18n.t('examination_times.create') }) if @examination_time.save
 
         error_response({ error: @examination_time.errors.full_messages.join(', ') })
       end
 
       def update
         if @examination_time.update(examination_time_params)
-          return success_response({ message: 'examination_times.update' })
+          return success_response({ message: I18n.t('examination_times.update') })
         end
 
         error_response({ error: @examination_time.errors.full_messages.join(', ') })
       end
 
       def destroy
-        return success_response({ message: 'examination_times.destroy' }) if @examination_time.destroy
+        return success_response({ message: I18n.t('examination_times.destroy') }) if @examination_time.destroy
 
         error_response({ error: @examintion_name.errors.full_messages.join(', ') })
       end
@@ -36,7 +36,7 @@ module Api
 
       def set_examination_time
         @examination_time = ExaminationTime.find_by_id(params[:id])
-        error_response({ error: 'examination_times.not_found' }) unless @examination_time
+        error_response({ error: I18n.t('examination_times.not_found') }) unless @examination_time
       end
 
       def examination_time_params

@@ -18,7 +18,7 @@ module Api
 
       def update
         if @branch.update(branch_params)
-          success_response({ data: {}, message: 'branches.update_record' })
+          success_response({ data: {}, message: I18n.t('branches.update_record') })
         else
           error_response({ error: @branch.errors.full_messages.join(', ') })
         end
@@ -26,7 +26,7 @@ module Api
 
       def destroy
         if @branch.destroy
-          success_response({ data: {}, message: 'branches.destroy_record' })
+          success_response({ data: {}, message: I18n.t('branches.destroy_record') })
         else
           error_response({ error: @branch.errors.full_messages.join(', ') })
         end

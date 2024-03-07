@@ -19,7 +19,7 @@ module Api
 
             generate_block_extra_configs
             generate_and_store_examination_blocks
-            success_response({ message: 'exam_time_tables.created' })
+            success_response({ message: I18n.t('exam_time_tables.created') })
           end
         rescue StandardError => e
           error_response({ error: e.message })
@@ -29,7 +29,7 @@ module Api
       def update
         if @time_table.update(time_table_params)
           generate_block_extra_configs
-          success_response({ message: 'exam_time_tables.updated' })
+          success_response({ message: I18n.t('exam_time_tables.updated') })
         else
           error_response({ error: @time_tables.errors.full_messages.join(', ') })
         end
@@ -37,7 +37,7 @@ module Api
 
       def destroy
         if @time_table.destroy
-          success_response({ message: 'exam_time_tables.destroy' })
+          success_response({ message: I18n.t('exam_time_tables.destroy') })
         else
           error_response({ error: @time_tables.errors.full_messages.join(', ') })
         end
@@ -60,7 +60,7 @@ module Api
         if @subjects
           success_response({ data: { subjects: @subjects } })
         else
-          error_response({ error: 'subjects.records_not_found' })
+          error_response({ error: I18n.t('subjects.records_not_found') })
         end
       end
 
