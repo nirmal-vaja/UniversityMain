@@ -5,7 +5,7 @@ class ExamTimeTable < ApplicationRecord
   include DefaultJsonOptions
 
   # callbacks
-  after_commit :destroy_block_extra_config, on: %i[destroy update]
+  after_commit :destroy_block_extra_configs, on: %i[destroy update]
 
   # belongs_to associations
   belongs_to :course

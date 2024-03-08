@@ -64,6 +64,15 @@ module Api
         end
       end
 
+      def find_subjects_without_time_table
+        @subjects = Subject.where(time_table_params.slice(:course_id, :branch_id, :semester_id))
+        @subject_ids_to_exclude = ExamTimeTable.where(time_table_params)&.pluck(:subject_id)
+        return success_response({ data: { subjects: @subjects } }) unless @subject_ids_to_exclude.present?
+
+        @subjects = @subjects.where.not(id: @subject_ids_to_exclude)
+        success_response({ data: { subjects: @subjects } })
+      end
+
       # Move this code to blocks_controller.rb
       # def available_blocks
       #   @blocks = Block
