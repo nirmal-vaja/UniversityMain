@@ -38,6 +38,7 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
     resources :branches do
       collection do
         get :all_branches
+        get :current_user_branches
       end
     end
     resources :semesters

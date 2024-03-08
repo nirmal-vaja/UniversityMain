@@ -26,6 +26,10 @@ class User < ApplicationRecord
   #   super(options)
   # end
 
+  def branches
+    course.branches
+  end
+
   def modified_date_of_joining
     date_of_joining&.strftime('%Y/%m/%d')
   end

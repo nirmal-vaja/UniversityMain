@@ -16,6 +16,13 @@ module Api
         success_response(branches_response)
       end
 
+      def current_user_branches
+        return error_response({ error: 'User not logged in' }) unless current_user
+
+        @branches = current_user.branches
+        success_response({ data: { branches: @branches } })
+      end
+
       def update
         if @branch.update(branch_params)
           success_response({ data: {}, message: I18n.t('branches.update_record') })
