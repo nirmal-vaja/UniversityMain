@@ -115,7 +115,7 @@ module Api
       end
 
       def find_maximum_students_per_block
-        ExaminationType.find_by_name(time_table_params[:time_table_type]).max_students_per_block
+        ExaminationType.find_by_name(time_table_params[:examination_type]).max_students_per_block
       end
 
       def find_no_students_appearing_for_this_exam
