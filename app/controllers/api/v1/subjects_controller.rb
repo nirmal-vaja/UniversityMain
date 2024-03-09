@@ -7,7 +7,7 @@ module Api
       before_action :set_subject, only: %w[destroy]
 
       def index
-        @subjects = Subject.all
+        @subjects = Subject.where(subject_params)
         success_response(subjects_response)
       end
 
