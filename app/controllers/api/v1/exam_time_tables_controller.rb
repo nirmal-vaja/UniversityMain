@@ -102,7 +102,7 @@ module Api
 
         @number_of_blocks = (number_of_students / @max_students_per_block).ceil
 
-        @exam_time_table.build_time_table_block_wise_reports(
+        @exam_time_table.build_time_table_block_wise_report(
           examination_name: @exam_time_table.examination_name,
           number_of_blocks: @number_of_blocks,
           academic_year: @exam_time_table.academic_year,
