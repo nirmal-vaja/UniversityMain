@@ -20,7 +20,7 @@ module Api
         return error_response({ error: 'User not logged in' }) unless current_user
 
         @branches = current_user.branches
-        success_response({ data: { branches: @branches } })
+        success_response({ data: { branches: @branches, course_id: current_user.course_id } })
       end
 
       def update
