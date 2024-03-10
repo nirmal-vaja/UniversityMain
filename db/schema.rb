@@ -128,7 +128,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_210958) do
     t.bigint "subject_id", null: false
     t.string "academic_year"
     t.date "examination_date"
-    t.integer "day", default: 3
+    t.integer "day", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["branch_id"], name: "index_exam_time_tables_on_branch_id"

@@ -49,15 +49,15 @@ module Api
           importer = ExcelImporter.new(@excel_sheet.sheet)
           case @excel_sheet.name
           when 'Course and Branch Details'
-            importer.create_course_and_branch
+            importer.import_branches
           when 'Semester and Division Details'
-            importer.create_semester_details
+            importer.import_semesters
           when 'Subject Details'
-            importer.create_subjects
+            importer.import_subjects
           when 'Faculty Details'
-            importer.create_faculties
+            importer.import_faculties
           when 'Student Details'
-            importer.create_students
+            importer.import_students
           when 'Room Details'
             importer.create_rooms
           when 'Syllabus Details'

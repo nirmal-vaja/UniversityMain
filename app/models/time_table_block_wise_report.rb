@@ -5,7 +5,7 @@ class TimeTableBlockWiseReport < ApplicationRecord
   include DefaultJsonOptions
 
   belongs_to :course
-  belongs_to :branch_id
+  belongs_to :branch
   belongs_to :semester
   belongs_to :exam_time_table
 

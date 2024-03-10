@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api
-  module V1 # rubocop:disable Style/Documentation
+  module V1
     # app/controllers/api/v1/exam_time_tables_controller.rb
     class ExamTimeTablesController < ApiController
       def index
@@ -100,7 +100,7 @@ module Api
         @max_students_per_block = find_maximum_students_per_block
         number_of_students = find_no_students_appearing_for_this_exam
 
-        @number_of_blocks = (number_of_students / @max_students_per_block).ceil
+        @number_of_blocks = (number_of_students.to_f / @max_students_per_block).ceil
 
         @exam_time_table.build_time_table_block_wise_report(
           examination_name: @exam_time_table.examination_name,
@@ -123,6 +123,60 @@ module Api
                       fees_paid: true).count
       end
 
+      def examination_params
+        {
+          examination_date: @exam_time_table.examination_date,
+          examination_time: @exam_time_table.examination_time,
+          examination_name: @exam_time_table.examination_name,
+          academic_year: @exam_time_table.academic_year,
+          course_id: @exam_time_table.course_id,
+          examination_type: @exam_time_table.examination_type
+        }
+      end
+
+      def generate_and_store_examination_blocks # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+        return unless @exam_time_table.time_table_block_wise_report.present?
+
+        name = get_next_block_name
+
+        @number_of_blocks.times do
+          block = @exam_time_table.examination_blocks.new(
+            examination_name: @exam_time_table.examination_name,
+            academic_year: @exam_time_table.academic_year,
+            examination_type: @exam_time_table.examination_type,
+            course_id: @exam_time_table.course_id,
+            branch_id: @exam_time_table.branch_id,
+            capacity: @max_students_per_block,
+            name:,
+            examination_date: @exam_time_table.examination_date,
+            examination_time: @exam_time_table.examination_time,
+            subject_id: @exam_time_table.subject_id
+          )
+
+          block.block_extra_config_id = @block_extra_config.id if block.block_extra_config_id.nil?
+
+          block.save
+
+          name = get_next_block_name(name)
+        end
+      end
+
+      def get_next_block_name(current_block = nil)
+        max_block = ExaminationBlock.where(examination_date: @exam_time_table.examination_date).maximum(:name)
+
+        if max_block.nil?
+          return 'A' unless current_block
+
+          return current_block.succ
+        end
+
+        return max_block.succ unless current_block
+
+        current_block.succ.upto(max_block) do |name|
+          return name unless ExaminationBlock.exists?(examination_date: @exam_time_table.examination_date, name:)
+        end
+      end
+
       def generate_block_extra_configs
         total_number_of_blocks = ExamTimeTable
                                  .where(examination_params)
@@ -133,58 +187,6 @@ module Api
 
         @block_extra_config.update(number_of_supervisions: total_number_of_blocks)
       end
-    end
-
-    def generate_and_store_examination_blocks # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
-      return unless @exam_time_table.time_table_block_wise_report.present?
-
-      name = get_next_block_name
-
-      @number_of_blocks.times do
-        block = @exam_time_table.examination_blocks.new!(
-          examination_name: @exam_time_table.examination_name,
-          academic_year: @exam_time_table.academic_year,
-          examination_type: @exam_time_table.examination_type,
-          course_id: @exam_time_table.course_id,
-          branch_id: @exam_time_table.branch_id,
-          capacity: @max_students_per_block,
-          name:,
-          examination_date: @exam_time_table.examination_date,
-          examination_time: @exam_time_table.examination_time,
-          subject_id: @exam_time_table.subject_id
-        )
-
-        block.block_extra_config_id = @block_extra_config.id if block.block_extra_config_id.nil?
-
-        name = get_next_block_name(name)
-      end
-    end
-
-    def get_next_block_name(current_block = nil)
-      max_block = Block.where(examination_date: @exam_time_table.examination_date).maximum(:name)
-
-      if max_block.nil?
-        return 'A' unless current_block
-
-        return current_block.succ
-      end
-
-      return max_block.succ unless current_block
-
-      current_block.succ.upto(max_block) do |name|
-        return name unless Block.exists?(examination_date: @exam_time_table.examination_date, name:)
-      end
-    end
-
-    def examination_params
-      {
-        examination_date: @exam_time_table.examination_date,
-        examination_time: @exam_time_table.examination_time,
-        examination_name: @exam_time_table.examination_name,
-        academic_year: @exam_time_table.academic_year,
-        course_id: @exam_time_table.course_id,
-        examination_type: @exam_time_table.examination_type
-      }
     end
   end
 end
