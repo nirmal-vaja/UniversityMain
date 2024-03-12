@@ -28,6 +28,8 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
       end
     end
 
+    resources :block_extra_configs
+
     resources :roles do
       collection do
         get :fetch_roles

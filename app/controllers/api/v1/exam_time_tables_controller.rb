@@ -3,9 +3,11 @@
 module Api
   module V1
     # app/controllers/api/v1/exam_time_tables_controller.rb
-    class ExamTimeTablesController < ApiController
+    class ExamTimeTablesController < ApiController # rubocop:disable Metrics/ClassLength
+      before_action :set_time_table, only: %i[update destroy]
+
       def index
-        @time_tables = ExamTimeTable.where(time_table_params)
+        @time_tables = ExamTimeTable.without_default_scope.where(time_table_params).order(examination_date: :asc)
         success_response({ data: { exam_time_tables: @time_tables } })
       end
 
@@ -89,6 +91,10 @@ module Api
       # end
 
       private
+
+      def set_time_table
+        @time_table = ExamTimeTable.find_by_id(params[:id])
+      end
 
       def time_table_params
         params.require(:exam_time_table).permit(:examination_name, :examination_type, :examination_time,

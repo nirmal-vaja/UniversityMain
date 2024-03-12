@@ -8,6 +8,9 @@ class Semester < ApplicationRecord
   has_many :subjects, dependent: :destroy
   has_many :divisions, dependent: :destroy
 
+  has_many :exam_time_tables, dependent: :destroy
+  has_many :time_table_block_wise_reports, dependent: :destroy
+
   after_save :update_associated_divisions, if: :saved_change_to_number_of_divisions?
 
   def as_json(options = {})

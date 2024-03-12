@@ -98,4 +98,8 @@ en:
   exam_time_tables:
     created: 'ExamTimeTable has been created successfully.'
     updated: 'ExamTimeTable has been updated successfully.'
+    destroy: 'ExamTimeTable has been deleted.'
+  block_extra_config:
+    not_found: 'BlockExtraConfig not found.'
+    update: 'BlockExtraConfig updated.'
   
