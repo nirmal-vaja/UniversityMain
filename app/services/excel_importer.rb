@@ -10,6 +10,7 @@ class ExcelImporter
     @faculty_importer = FacultyImporter.new(@data)
     @subject_importer = SubjectImporter.new(@data)
     @student_importer = StudentImporter.new(@data)
+    @room_importer = RoomImporter.new(@data)
   end
 
   def import_branches
@@ -30,6 +31,10 @@ class ExcelImporter
 
   def import_students
     @student_importer.create_students
+  end
+
+  def import_rooms
+    @room_importer.create_rooms
   end
 
   private

@@ -62,6 +62,7 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
 
     resources :exam_time_tables do
       collection do
+        get :all_unique_exam_time_table
         get :find_subjects_without_time_table
         get :unique_examination_dates # get_examination_dates
         get :exam_related_subjects # fetch_subjects

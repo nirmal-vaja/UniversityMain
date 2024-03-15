@@ -58,8 +58,8 @@ module Api
             importer.import_faculties
           when 'Student Details'
             importer.import_students
-          when 'Room Details'
-            importer.create_rooms
+          when 'ExaminationRoom Details'
+            importer.import_rooms
           when 'Syllabus Details'
             importer.create_syllabus
           end

@@ -17,7 +17,7 @@ module Api
 
       def update
         if @block_extra_config.update(block_extra_config_params)
-          success_response({ message: 'block_extra_configs.update' })
+          success_response({ message: I18n.t('block_extra_configs.update') })
         else
           error_response({ error: @block_extra_config.errors.full_messages.join(', ') })
         end

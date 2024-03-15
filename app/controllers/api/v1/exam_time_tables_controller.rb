@@ -45,14 +45,22 @@ module Api
         end
       end
 
-      def unique_examination_dates
-        @exam_time_table_dates = ExamTimeTable
-                                 .distinct
-                                 .where(time_table_params.except(:examination_date))
-                                 .order(examination_date: :desc)
-                                 .pluck(:examination_date)
+      def all_unique_exam_time_table
+        @exam_time_tables = current_user.course.exam_time_tables.without_default_scope
+                                        .distinct
+                                        .order(examination_date: :asc)
 
-        success_response(data: { examination_dates: @exam_time_table_dates })
+        success_response({ data: { exam_time_tables: @exam_time_tables } })
+      end
+
+      def unique_examination_dates
+        @exam_time_table_dates = ExamTimeTable.without_default_scope
+                                              .distinct
+                                              .where(time_table_params.except(:examination_date))
+                                              .order(examination_date: :asc)
+                                              .pluck(:examination_date)
+
+        success_response({ data: { examination_dates: @exam_time_table_dates } })
       end
 
       def exam_related_subjects

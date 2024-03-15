@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_06_210958) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_14_184335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -164,6 +164,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_210958) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "examination_rooms", force: :cascade do |t|
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.string "floor"
+    t.string "room_number"
+    t.integer "capacity", default: 0
+    t.string "building"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_examination_rooms_on_branch_id"
+    t.index ["course_id"], name: "index_examination_rooms_on_course_id"
   end
 
   create_table "examination_times", force: :cascade do |t|
@@ -336,6 +349,27 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_210958) do
     t.index ["semester_id"], name: "index_subjects_on_semester_id"
   end
 
+  create_table "supervisions", force: :cascade do |t|
+    t.text "metadata"
+    t.bigint "user_id", null: false
+    t.string "examination_name"
+    t.string "academic_year"
+    t.string "examination_type"
+    t.string "examination_time"
+    t.bigint "course_id", null: false
+    t.string "user_type"
+    t.integer "number_of_supervisions"
+    t.integer "0"
+    t.bigint "branch_id"
+    t.bigint "semester_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_supervisions_on_branch_id"
+    t.index ["course_id"], name: "index_supervisions_on_course_id"
+    t.index ["semester_id"], name: "index_supervisions_on_semester_id"
+    t.index ["user_id"], name: "index_supervisions_on_user_id"
+  end
+
   create_table "time_table_block_wise_reports", force: :cascade do |t|
     t.string "examination_name"
     t.string "academic_year"
@@ -409,6 +443,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_210958) do
   add_foreign_key "examination_blocks", "courses"
   add_foreign_key "examination_blocks", "exam_time_tables"
   add_foreign_key "examination_blocks", "subjects"
+  add_foreign_key "examination_rooms", "branches"
+  add_foreign_key "examination_rooms", "courses"
   add_foreign_key "guardian_details", "students"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
@@ -425,6 +461,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_210958) do
   add_foreign_key "subjects", "branches"
   add_foreign_key "subjects", "courses"
   add_foreign_key "subjects", "semesters"
+  add_foreign_key "supervisions", "branches"
+  add_foreign_key "supervisions", "courses"
+  add_foreign_key "supervisions", "semesters"
+  add_foreign_key "supervisions", "users"
   add_foreign_key "time_table_block_wise_reports", "branches"
   add_foreign_key "time_table_block_wise_reports", "courses"
   add_foreign_key "time_table_block_wise_reports", "exam_time_tables"

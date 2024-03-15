@@ -20,7 +20,7 @@ class StudentImporter
 
       return { error: 'Upload valid file' } unless headers.include?('enrollment_number')
 
-      if row[headers.find_index('enrollment_number')].is_a?(String) && row[headers.find_index('enrollment_number')].gsub(
+      if row[headers.find_index('enrollment_number')].is_a?(String) && row[headers.find_index('enrollment_number')].gsub( # rubocop:disable Layout/LineLength
         /\s+/, ''
       ).underscore == 'enrollment_number'
         next
