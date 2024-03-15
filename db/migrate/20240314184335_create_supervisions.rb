@@ -9,7 +9,7 @@ class CreateSupervisions < ActiveRecord::Migration[7.0]
       t.string :examination_time
       t.references :course, null: false, foreign_key: true
       t.string :user_type
-      t.integer :number_of_supervisions, 0
+      t.integer :number_of_supervisions, default: 0
       t.references :branch, foreign_key: true
       t.references :semester, foreign_key: true
 

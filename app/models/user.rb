@@ -17,6 +17,8 @@ class User < ApplicationRecord
   belongs_to :course, optional: true
   belongs_to :branch, optional: true
 
+  has_many :supervisions, dependent: :destroy
+
   enum :gender, { male: 0, female: 1 }
   enum user_type: { "Junior": 0, "Senior": 1 }
 

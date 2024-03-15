@@ -358,8 +358,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_14_184335) do
     t.string "examination_time"
     t.bigint "course_id", null: false
     t.string "user_type"
-    t.integer "number_of_supervisions"
-    t.integer "0"
+    t.integer "number_of_supervisions", default: 0
     t.bigint "branch_id"
     t.bigint "semester_id"
     t.datetime "created_at", null: false
