@@ -33,6 +33,15 @@ module Api
         end
       end
 
+      def faculties_without_supervisions
+        @faculties = User.left_joins(:supervisions)
+                         .with_role(:faculty)
+                         .where(supervision_params.slice(:course_id, :branch_id))
+                         .where.not(id: Supervision.where(supervision_params).pluck(:user_id))
+
+        success_response({ data: { users: @faculties } })
+      end
+
       private
 
       def filtered_supervisions
