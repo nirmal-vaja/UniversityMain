@@ -4,7 +4,7 @@ module Api
   module V1
     # app/controllers/api/v1/supervisions_controller.rb
     class SupervisionsController < ApiController
-      include SupervisionHelper
+      include SupervisionHelpers
 
       before_action :filtered_supervisions, only: [:index]
       before_action :fetch_block_extra_configs, only: [:create]

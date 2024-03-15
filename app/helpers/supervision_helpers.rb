@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # app/helpers/supervision_helpers.rb
-module SupervisionHelper
+module SupervisionHelpers
   def fetch_available_dates(supervision_params, supervision_metadata)
     time_table_params = supervision_params.slice(:course_id, :branch_id, :examination_name, :academic_year,
                                                  :examination_type, :examination_time)
