@@ -28,14 +28,6 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
       end
     end
 
-    resources :supervisions do
-      collection do
-        get :faculties_without_supervisions
-      end
-    end
-
-    resources :block_extra_configs
-
     resources :roles do
       collection do
         get :fetch_roles
@@ -72,6 +64,20 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
         get :find_subjects_without_time_table
         get :unique_examination_dates # get_examination_dates
         get :exam_related_subjects # fetch_subjects
+      end
+    end
+
+    resources :block_extra_configs
+
+    resources :supervisions do
+      collection do
+        get :faculties_without_supervisions
+      end
+    end
+
+    resources :other_duties do
+      collection do
+        get :fetch_unsupervised_faculties
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_14_184335) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_16_133239) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -246,6 +246,22 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_14_184335) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "other_duties", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "course_id"
+    t.bigint "branch_id"
+    t.string "examination_name"
+    t.string "examination_time"
+    t.string "examination_type"
+    t.string "academic_year"
+    t.string "assigned_duties"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_other_duties_on_branch_id"
+    t.index ["course_id"], name: "index_other_duties_on_course_id"
+    t.index ["user_id"], name: "index_other_duties_on_user_id"
+  end
+
   create_table "parent_details", force: :cascade do |t|
     t.string "qualification_of_father"
     t.string "occupation_of_father"
@@ -447,6 +463,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_14_184335) do
   add_foreign_key "guardian_details", "students"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "other_duties", "branches"
+  add_foreign_key "other_duties", "courses"
+  add_foreign_key "other_duties", "users"
   add_foreign_key "parent_details", "students"
   add_foreign_key "semesters", "branches"
   add_foreign_key "student_blocks", "branches"

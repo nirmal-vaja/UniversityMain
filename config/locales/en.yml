@@ -102,4 +102,14 @@ en:
   block_extra_configs:
     not_found: 'BlockExtraConfig not found.'
     update: 'Operation successfull.'
+  supervisions:
+    created: 'Operation successfull.'
+    no_exam_dates_found: 'No examination dates found to assign more!'
+    updated: 'Operation successfull.'
+    destroy: 'Supervision destroyed.'
+  other_duties:
+    created: 'Operation successfull.'
+    updated: 'Operation successfull.'
+    destroy: 'Operation successfull.'
+    
   
