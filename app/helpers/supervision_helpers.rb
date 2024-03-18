@@ -21,7 +21,6 @@ module SupervisionHelpers
   def generate_metadata(supervision, dates, number_of_supervisions, block_extra_configs) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     metadata = {}
     dates_to_assign = dates&.sample(number_of_supervisions)
-    binding.pry
 
     if dates_to_assign.present?
       dates_to_assign.each do |date|

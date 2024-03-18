@@ -18,11 +18,9 @@ module Api
         @supervision = Supervision.new(supervision_params)
         @supervision.branch = @supervision.user.branch
 
-        binding.pry
         # Fetch Available dates to assign.
         @dates = fetch_available_dates(supervision_params, {}, @supervision.user_type)
 
-        binding.pry
         @supervision.metadata = generate_metadata(@supervision, @dates, @supervision.number_of_supervisions,
                                                   @block_extra_configs)
 

@@ -53,7 +53,6 @@ class RoomImporter
     branch_name = data['department']
 
     course = courses_cache[course_name] ||= Course.find_by(name: course_name)
-    binding.pry
     return { error: "#{course_name} not found" } unless course
 
     branch = branches_cache[branch_name] ||= course.branches.find_by(name: branch_name)
@@ -63,7 +62,6 @@ class RoomImporter
   end
 
   def find_existing_room(data, course, branch)
-    binding.pry
     room = ExaminationRoom.find_by(
       course:,
       branch:,
