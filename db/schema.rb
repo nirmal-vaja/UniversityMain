@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_16_133239) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_17_071228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,33 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_16_133239) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_id"], name: "index_branches_on_course_id"
+  end
+
+  create_table "configs", force: :cascade do |t|
+    t.string "examination_name"
+    t.string "examination_time"
+    t.string "examination_type"
+    t.string "academic_year"
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_configs_on_branch_id"
+    t.index ["course_id"], name: "index_configs_on_course_id"
+    t.index ["user_id"], name: "index_configs_on_user_id"
+  end
+
+  create_table "configured_semesters", force: :cascade do |t|
+    t.bigint "semester_id", null: false
+    t.bigint "division_id", null: false
+    t.text "subject_ids"
+    t.bigint "config_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["config_id"], name: "index_configured_semesters_on_config_id"
+    t.index ["division_id"], name: "index_configured_semesters_on_division_id"
+    t.index ["semester_id"], name: "index_configured_semesters_on_semester_id"
   end
 
   create_table "contact_details", force: :cascade do |t|
@@ -447,6 +474,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_16_133239) do
   add_foreign_key "address_details", "students"
   add_foreign_key "block_extra_configs", "courses"
   add_foreign_key "branches", "courses"
+  add_foreign_key "configs", "branches"
+  add_foreign_key "configs", "courses"
+  add_foreign_key "configs", "users"
+  add_foreign_key "configured_semesters", "configs"
+  add_foreign_key "configured_semesters", "divisions"
+  add_foreign_key "configured_semesters", "semesters"
   add_foreign_key "contact_details", "students"
   add_foreign_key "divisions", "semesters"
   add_foreign_key "exam_time_tables", "branches"
