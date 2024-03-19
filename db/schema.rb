@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_17_071228) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_19_174359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -424,6 +424,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_17_071228) do
     t.integer "number_of_blocks", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "examination_time"
+    t.date "examination_date"
     t.index ["branch_id"], name: "index_time_table_block_wise_reports_on_branch_id"
     t.index ["course_id"], name: "index_time_table_block_wise_reports_on_course_id"
     t.index ["exam_time_table_id"], name: "index_time_table_block_wise_reports_on_exam_time_table_id"

@@ -15,6 +15,7 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
 
     resources :users do
       collection do
+        get :current_course_id
         get :find_user
         get :assigned_role_users
         get :faculty_names
@@ -67,11 +68,14 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
       end
     end
 
+    resources :time_table_block_wise_reports
+
     resources :block_extra_configs
 
     resources :supervisions do
       collection do
         get :faculties_without_supervisions
+        get :unique_examination_dates
       end
     end
 

@@ -66,7 +66,7 @@ class FacultyImporter
       designation: data['designation'],
       date_of_joining: data['dateof_joining'],
       gender: data['gender'].downcase,
-      department: data['designation'],
+      department: branch.name,
       course:,
       branch:,
       user_type: data['type'] == 'Junior' ? 0 : 1
@@ -74,7 +74,7 @@ class FacultyImporter
   end
 
   def create_or_initialize_user(data, course, branch) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-    user = User.find_or_initialize_by(email: data['email']) do |u|
+    user = User.find_or_initialize_by(email: data['email']).tap do |u|
       u.assign_attributes(
         first_name: data['faculty_name'].split(' ', 2)[0],
         last_name: data['faculty_name'].split(' ', 2)[1],
@@ -83,17 +83,16 @@ class FacultyImporter
         date_of_joining: data['dateof_joining'],
         gender: data['gender'].downcase,
         status: true,
-        department: data['designation'],
+        department: branch.name,
         course:,
         branch:,
         password: 'password',
         user_type: data['type'] == 'Junior' ? 0 : 1
       )
+
+      u.add_role(:faculty) unless u.has_role?(:faculty)
+      return { error: "#{data['faculty_name']}'s " + u.errors.full_messages.join(', ') } unless u.save
     end
-
-    user.add_role(:faculty) unless user.has_role?(:faculty)
-
-    return { error: "#{data['faculty_name']}'s " + user.errors.full_messages.join(', ') } unless user.save
 
     { user: }
   end

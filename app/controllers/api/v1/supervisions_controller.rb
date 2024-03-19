@@ -25,6 +25,7 @@ module Api
                                                   @block_extra_configs)
 
         if @supervision.metadata.present?
+          @supervision.number_of_supervisions = @supervision.metadata.length
           if @supervision.save
             success_response({ message: I18n.t('supervisions.created') })
           else
@@ -63,6 +64,16 @@ module Api
         end
       end
 
+      def uniq_exam_time_tables
+        @dates = Supervision.where(supervision_params)
+                            .pluck(:metadata)
+                            .compact
+                            .flat_map(&:keys)
+                            .uniq
+
+        success_response({ data: { examination_dates: @dates } })
+      end
+
       def faculties_without_supervisions
         @faculties = User.left_joins(:supervisions)
                          .with_role(:faculty)
@@ -87,7 +98,7 @@ module Api
         @supervisions = Supervision.where(supervision_params.except(:examination_date))
         return unless supervision_params[:examination_date].present?
 
-        date = "%#{supervision_params[:date]}%"
+        date = "%#{supervision_params[:examination_date]}%"
         @supervisions = @supervisions.where('metadata LIKE ?', date)
       end
 
@@ -97,6 +108,7 @@ module Api
           :academic_year,
           :examination_type,
           :examination_time,
+          :examination_date,
           :course_id,
           :branch_id,
           :user_id,

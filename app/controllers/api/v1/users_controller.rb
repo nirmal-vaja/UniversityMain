@@ -115,6 +115,10 @@ module Api
         end
       end
 
+      def current_course_id
+        success_response({ data: { course_id: current_user&.course_id } })
+      end
+
       def revoke_role
         @user.remove_role_without_deletion(@role_name)
         unless @user.has_role?(@role_name)

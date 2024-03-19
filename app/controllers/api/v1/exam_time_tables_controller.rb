@@ -124,7 +124,8 @@ module Api
           course_id: @exam_time_table.course_id,
           branch_id: @exam_time_table.branch_id,
           semester_id: @exam_time_table.semester_id,
-          examination_type: @exam_time_table.examination_type
+          examination_type: @exam_time_table.examination_type,
+          examination_time: @exam_time_table.examination_time
         )
       end
 

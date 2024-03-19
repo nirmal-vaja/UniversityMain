@@ -2,8 +2,8 @@
 
 # app/helpers/supervision_helpers.rb
 module SupervisionHelpers
-  def fetch_available_dates(supervision_params, supervision_metadata, user_type)
-    time_table_params = supervision_params.slice(:course_id, :branch_id, :examination_name, :academic_year,
+  def fetch_available_dates(supervision_params, supervision_metadata, user_type) # rubocop:disable Metrics/MethodLength
+    time_table_params = supervision_params.slice(:course_id, :examination_name, :academic_year,
                                                  :examination_type, :examination_time)
 
     if user_type.downcase == 'junior'
@@ -13,20 +13,19 @@ module SupervisionHelpers
                    .map { |date| date.strftime('%Y-%m-%d') }
                    .reject { |x| supervision_metadata.keys.include?(x) }
     else
-      BlockExtraConfig.where.not(number_of_extra_sr_supervision: [nil,
-                                                                  0]).where(time_table_params.except(:branch_id)).pluck(:examination_date)
+      BlockExtraConfig.where.not(number_of_extra_sr_supervision: [nil, 0])
+                      .where(time_table_params.except(:branch_id))
+                      .pluck(:examination_date)
     end
   end
 
-  def generate_metadata(supervision, dates, number_of_supervisions, block_extra_configs) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def generate_metadata(supervision, dates, number_of_supervisions, block_extra_configs) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     metadata = {}
     dates_to_assign = dates&.sample(number_of_supervisions)
 
     if dates_to_assign.present?
       dates_to_assign.each do |date|
-        block_extra_config = block_extra_configs
-                             .where.not(number_of_extra_sr_supervision: [nil, 0])
-                             .find_by(examination_date: date)
+        block_extra_config = block_extra_configs.find_by(examination_date: date)
 
         downcase_user_type = supervision.user_type.downcase
         user_type = downcase_user_type == 'junior' ? 'Junior' : 'Senior'
