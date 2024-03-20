@@ -1,7 +1,69 @@
-<p>Hello <%= @user.full_name %>!</p>
-<p>Greetings, You have been assigned as <%= @role_name %>, Below are the credentials you can use to login as <%= @role_name %> </p>
-<p><%= "Email : " + @user.email %></p>
-<p> Enter the above mentional email as input at the login page and click on "Send OTP", you will be receiving an OTP via your email. </p>
-<p> <a href="<%= @url %>"> Click here to login </a></p>
-<p> Please make sure this mail contains confidential information, do not forward or share with anyone. </p>
-<p> Thank You! </p>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+      /* Add your custom styles here */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f3f8fb;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background-color: #1F2A40;
+        color: #cbb269;
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+      }
+      .content {
+        padding: 20px;
+      }
+      p {
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      strong {
+        font-weight: bold;
+        color: #090090;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Hello <%= @user.full_name %>!</h1>
+      </div>
+      <div class="content">
+        <p>Dear Faculty Member,</p>
+        <p>We are pleased to inform you that you've been assigned the role of <strong><%= @role_name %></strong> at our institution.</p>
+        <p>Please find below the necessary information to access your <%= @role_name %> account:</p>
+        <p><strong>Email:</strong> <%= @user.email %></p>
+        <p>To log in, simply use the provided email address and initiate the "Send OTP" process. You will receive a One-Time Passcode (OTP) shortly after.</p>
+        <p><a href="<%= @url %>">Click here to log in</a></p>
+        <p><i>Please treat this email with utmost confidentiality. Do not share your login details with anyone.</i></p>
+        <p>Thank you for your cooperation.</p>
+        <p>Sincerely,</p>
+        <p>The Administration Team</p>
+      </div>
+    </div>
+  </body>
+</html>
