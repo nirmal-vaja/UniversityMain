@@ -4,6 +4,7 @@ module Api
   module V1
     # app/controllers/api/v1/exam_time_tables_controller.rb
     class ExamTimeTablesController < ApiController # rubocop:disable Metrics/ClassLength
+      include ActionController::MimeResponds
       before_action :set_time_table, only: %i[update destroy]
 
       def index
@@ -81,6 +82,51 @@ module Api
 
         @subjects = @subjects.where.not(id: @subject_ids_to_exclude)
         success_response({ data: { subjects: @subjects } })
+      end
+
+      def handle_print # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+        @exam_time_tables = ExamTimeTable.without_default_scope.where(time_table_params).order(examination_date: :asc)
+        @examination_name = @exam_time_tables.pluck(:examination_name).uniq.first
+        @examination_time = @exam_time_tables.pluck(:examination_time).uniq.first
+        @examination_type = @exam_time_tables.pluck(:examination_type).uniq.first
+        @academic_year = @exam_time_tables.pluck(:academic_year).uniq.first
+
+        pdf_html = "<html>
+                          <head>
+                            <style>
+                              .heading {
+                                margin-top: 20px;
+                              }
+                            </style>
+                          </head>
+                          <body>
+                            <h1 class='heading'> #{@examination_name} </h1>
+                          </body>
+                        </html>"
+        send_data(WickedPdf.new.pdf_from_string(pdf_html), filename: 'handle_print.pdf')
+
+        # pdf_html = render_to_string(template: 'api/v1/exam_time_tables/handle_print.html.erb',
+        #                             layout: 'pdf',
+        #                             formats: [:html],
+        #                             locals: {
+        #                               exam_time_tables: @exam_time_tables,
+        #                               examination_name: @examination_name,
+        #                               examination_time: @examination_time,
+        #                               examination_type: @examination_type,
+        #                               academic_year: @academic_year
+        #                             })
+        # pdf = WickedPdf.new.pdf_from_string(pdf_html)
+
+        # binding.pry
+
+        # if params[:type] == 'print'
+        #   send_data(pdf, filename: "ExamTimeTable #{time_table_params[:examination_name]}.pdf",
+        #                  type: 'application/pdf', disposition: 'inline',
+        #                  headers: { 'Content-Disposition': 'inline' })
+        # else
+        #   send_data(pdf, filename: "ExamTimeTable #{time_table_params[:examination_name]}.pdf",
+        #                  type: 'application/pdf', disposition: 'attachment')
+        # end
       end
 
       # Move this code to blocks_controller.rb
