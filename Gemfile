@@ -95,7 +95,3 @@ gem 'roo', '~> 2.8'
 
 # Pagination Gem
 gem 'pagy'
-
-# Pdf management gems
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
