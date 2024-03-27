@@ -11,6 +11,8 @@ class Course < ApplicationRecord
   has_many :time_table_block_wise_reports, dependent: :destroy
   has_many :examination_blocks, dependent: :destroy
 
+  has_many :subjects, dependent: :destroy
+
   has_many :block_extra_configs, dependent: :destroy
 
   def as_json(options = {})

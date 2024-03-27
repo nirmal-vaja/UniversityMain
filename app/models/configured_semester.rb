@@ -1,4 +1,4 @@
-# frozen_string_lateral: true
+# frozen_string_literal: true
 
 # app/models/configured_semester.rb5
 class ConfiguredSemester < ApplicationRecord

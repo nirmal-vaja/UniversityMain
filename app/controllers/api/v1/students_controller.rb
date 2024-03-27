@@ -39,6 +39,11 @@ module Api
         end
       end
 
+      def find_students_to_enter_marks
+        @students = Student.where(student_params).includes(:student_marks).where(student_marks: { id: nil })
+        success_response({ data: { students: @students } })
+      end
+
       private
 
       def set_student

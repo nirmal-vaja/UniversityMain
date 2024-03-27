@@ -11,6 +11,11 @@ module Api
         success_response(subjects_response)
       end
 
+      def current_course_subjects
+        @subjects = current_user.course.subjects
+        success_response({ data: { subjects: @subjects } })
+      end
+
       def create
         @subject = Subject.find_or_initialize_by(subject_params.except(:category, :lecture, :tutorial, :practical))
         update_attributes_if_persisted

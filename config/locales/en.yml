@@ -111,5 +111,8 @@ en:
     created: 'Operation successfull.'
     updated: 'Operation successfull.'
     destroy: 'Operation successfull.'
-    
+  marks_entries:
+    create: 'Faculty has been assigned successfully.'
+    update: 'Operation successfull.'
+    destroy: 'Operation successfull.'
   

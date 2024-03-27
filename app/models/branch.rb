@@ -13,6 +13,8 @@ class Branch < ApplicationRecord
   has_many :time_table_block_wise_reports, dependent: :destroy
   has_many :examination_blocks, dependent: :destroy
 
+  has_many :subjects, dependent: :destroy
+
   # Validations
   validates :code, uniqueness: { scope: :course_id }
 
@@ -24,7 +26,8 @@ class Branch < ApplicationRecord
 
     super(options).merge(
       course_name: course.name,
-      semesters:
+      semesters:,
+      subjects:
     )
   end
 

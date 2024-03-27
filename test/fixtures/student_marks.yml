@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  examination_name: MyString
+  academic_year: MyString
+  examination_time: MyString
+  examination_type: MyString
+  course: one
+  branch: one
+  semester: one
+  division: one
+  subject: one
+  student: one
+  marks: MyString
+  locked: false
+  published: false
+
+two:
+  examination_name: MyString
+  academic_year: MyString
+  examination_time: MyString
+  examination_type: MyString
+  course: two
+  branch: two
+  semester: two
+  division: two
+  subject: two
+  student: two
+  marks: MyString
+  locked: false
+  published: false

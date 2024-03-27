@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_19_174359) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_26_082529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -245,6 +245,34 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_19_174359) do
     t.index ["student_id"], name: "index_guardian_details_on_student_id"
   end
 
+  create_table "marks_entries", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "examination_name"
+    t.string "academic_year"
+    t.string "examination_time"
+    t.string "examination_type"
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.bigint "semester_id", null: false
+    t.bigint "division_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_marks_entries_on_branch_id"
+    t.index ["course_id"], name: "index_marks_entries_on_course_id"
+    t.index ["division_id"], name: "index_marks_entries_on_division_id"
+    t.index ["semester_id"], name: "index_marks_entries_on_semester_id"
+    t.index ["user_id"], name: "index_marks_entries_on_user_id"
+  end
+
+  create_table "marks_entry_subjects", force: :cascade do |t|
+    t.bigint "marks_entry_id", null: false
+    t.bigint "subject_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["marks_entry_id"], name: "index_marks_entry_subjects_on_marks_entry_id"
+    t.index ["subject_id"], name: "index_marks_entry_subjects_on_subject_id"
+  end
+
   create_table "oauth_access_tokens", force: :cascade do |t|
     t.bigint "resource_owner_id"
     t.bigint "application_id", null: false
@@ -343,6 +371,30 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_19_174359) do
     t.index ["course_id"], name: "index_student_blocks_on_course_id"
     t.index ["examination_block_id"], name: "index_student_blocks_on_examination_block_id"
     t.index ["student_id"], name: "index_student_blocks_on_student_id"
+  end
+
+  create_table "student_marks", force: :cascade do |t|
+    t.string "examination_name"
+    t.string "academic_year"
+    t.string "examination_time"
+    t.string "examination_type"
+    t.bigint "course_id", null: false
+    t.bigint "branch_id", null: false
+    t.bigint "semester_id", null: false
+    t.bigint "division_id", null: false
+    t.bigint "subject_id", null: false
+    t.bigint "student_id", null: false
+    t.string "marks"
+    t.boolean "locked"
+    t.boolean "published"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["branch_id"], name: "index_student_marks_on_branch_id"
+    t.index ["course_id"], name: "index_student_marks_on_course_id"
+    t.index ["division_id"], name: "index_student_marks_on_division_id"
+    t.index ["semester_id"], name: "index_student_marks_on_semester_id"
+    t.index ["student_id"], name: "index_student_marks_on_student_id"
+    t.index ["subject_id"], name: "index_student_marks_on_subject_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -496,6 +548,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_19_174359) do
   add_foreign_key "examination_rooms", "branches"
   add_foreign_key "examination_rooms", "courses"
   add_foreign_key "guardian_details", "students"
+  add_foreign_key "marks_entries", "branches"
+  add_foreign_key "marks_entries", "courses"
+  add_foreign_key "marks_entries", "divisions"
+  add_foreign_key "marks_entries", "semesters"
+  add_foreign_key "marks_entries", "users"
+  add_foreign_key "marks_entry_subjects", "marks_entries"
+  add_foreign_key "marks_entry_subjects", "subjects"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "other_duties", "branches"
@@ -507,6 +566,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_19_174359) do
   add_foreign_key "student_blocks", "courses"
   add_foreign_key "student_blocks", "examination_blocks"
   add_foreign_key "student_blocks", "students"
+  add_foreign_key "student_marks", "branches"
+  add_foreign_key "student_marks", "courses"
+  add_foreign_key "student_marks", "divisions"
+  add_foreign_key "student_marks", "semesters"
+  add_foreign_key "student_marks", "students"
+  add_foreign_key "student_marks", "subjects"
   add_foreign_key "students", "branches"
   add_foreign_key "students", "courses"
   add_foreign_key "students", "divisions"

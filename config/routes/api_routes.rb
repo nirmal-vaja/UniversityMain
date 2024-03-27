@@ -43,9 +43,14 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
       end
     end
     resources :semesters
-    resources :subjects
+    resources :subjects do
+      collection do
+        get :current_course_subjects
+      end
+    end
     resources :students do
       collection do
+        get :find_students_to_enter_marks
         get :unassigned_students
       end
     end
@@ -85,5 +90,8 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
         get :fetch_unsupervised_faculties
       end
     end
+
+    resources :marks_entries
+    resources :student_marks
   end
 end

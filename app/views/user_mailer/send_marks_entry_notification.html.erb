@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+    <style>
+      /* Add your custom styles here */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f3f8fb;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background-color: #1F2A40;
+        color: #cbb269;
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px 8px 0 0;
+      }
+      .content {
+        padding: 20px;
+      }
+      p {
+        margin-bottom: 15px;
+        line-height: 1.5;
+      }
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      strong {
+        font-weight: bold;
+        color: #090090;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Hello <%= @user.full_name %>!</h1>
+      </div>
+      <div class="content">
+        <p>Dear Faculty Member,</p>
+        <% if @user.has_role?(@role_name) %>
+          <p>We are pleased to inform you that you've been assigned the role of <strong><%= @role_name %></strong> at our institution.</p>
+          <p>Please find below the necessary information to access your <%= @role_name %> account:</p>
+          <p><strong>Email:</strong> <%= @user.email %></p>
+          <p>Below are the subjects you need to enter marks:</p>
+          <hr>
+          <table>
+            <% @subject_names.each do |subject_name| %>
+              <tr>
+                <td style="font-weight: bold;"><%= subject_name %></td>
+              </tr>
+            <% end %>
+          </table>
+          <p>To log in, simply use the provided email address and initiate the "Send OTP" process. You will receive a One-Time Passcode (OTP) shortly after.</p>
+          <p><a href="<%= @url %>">Click here to log in</a></p>
+          <p><i>Please treat this email with utmost confidentiality. Do not share your login details with anyone.</i></p>
+        <% else %>
+          <p> You have been revoked to enter student's marks. </p>
+        <% end %>
+        <p>Thank you for your cooperation.</p>
+        <p>Sincerely,</p>
+        <p>The Administration Team</p>
+      </div>
+    </div>
+  </body>
+</html>
