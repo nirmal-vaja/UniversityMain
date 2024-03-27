@@ -24,11 +24,11 @@ class User < ApplicationRecord
   enum :gender, { male: 0, female: 1 }
   enum user_type: { "Junior": 0, "Senior": 1 }
 
-  # def as_json(options = {})
-  #   options[:except] ||= %i[show secure_id otp otp_generated_at status date_of_joining]
-  #   options[:methods] ||= %i[full_name modified_date_of_joining course_name branch_name]
-  #   super(options)
-  # end
+  def as_json(options = {})
+    options[:except] ||= %i[show secure_id otp otp_generated_at status date_of_joining]
+    options[:methods] ||= %i[full_name modified_date_of_joining course_name branch_name marks_entries configs]
+    super(options)
+  end
 
   def branches
     course.branches

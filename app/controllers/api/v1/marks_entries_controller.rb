@@ -92,7 +92,7 @@ module Api
       end
 
       def sanitized_marks_entry_params
-        return unless marks_entry_params[:subject_ids].present?
+        return marks_entry_params unless marks_entry_params[:subject_ids].present?
 
         new_marks_entry_params = marks_entry_params.except(:subject_ids)
         new_marks_entry_params[:subject_ids] = marks_entry_params[:subject_ids].values

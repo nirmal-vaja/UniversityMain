@@ -41,6 +41,11 @@ module Api
         end
       end
 
+      def fetch_user_details
+        user = current_user
+        success_response({ data: { user: } })
+      end
+
       def check_login_status
         return error_response(not_logged_in_options) unless doorkeeper_token
 

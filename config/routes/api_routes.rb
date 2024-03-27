@@ -17,6 +17,7 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
       collection do
         get :current_course_id
         get :find_user
+        get :fetch_user_details
         get :assigned_role_users
         get :faculty_names
         post :create_super_admin

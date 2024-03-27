@@ -36,6 +36,10 @@ module Api
         end
       end
 
+      def data_for_lock_marks
+        
+      end
+
       private
 
       def set_student_mark
