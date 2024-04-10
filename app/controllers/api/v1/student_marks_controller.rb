@@ -52,7 +52,7 @@ module Api
         @subjects = Subject.joins(:student_marks).where(student_marks: student_marks_params.merge(locked: true)).distinct
         @actual_subjects = Subject.where(student_marks_params.slice(:course_id, :branch_id, :semester_id))
         subjects_ids = @subjects.map(&:id)
-        @publish_status = StudentMark.where(subject_id: subjects_ids).first.published
+        @publish_status = StudentMark.where(subject_id: subjects_ids).first&.published
         success_response({ data: { subjects: @subjects,
                                    eligible_for_publish_marks: @actual_subjects.length == @subjects.length,
                                    published: @publish_status } })
@@ -96,19 +96,26 @@ module Api
       def marksheet_data
         @students = Student.where(sanitized_marksheet_params.slice(:course_id, :branch_id, :semester_id, :division_id))
 
-        @student_marks = StudentMark.where(sanitized_marksheet_params)
-
-        @students = @students&.map do |student|
+        @student_marks = StudentMark.where(sanitized_marksheet_params).where(published: true)
+        @examination_types = ExaminationType.all
+        response = []
+        @students&.each do |student|
           student_marks = @student_marks.where(student_id: student.id)
-          student.attributes.merge(
-            {
-              semester_name: student.semester.name,
-              marksheet_data: student_marks
-            }
-          )
+          response_hash = {}
+          response_hash[:student_enrollment_number] =  student.enrollment_number.to_i.to_s
+          response_hash[:student_name] = student.name
+          response_hash[:student_semester_name] = student.semester_name
+          response_hash[:marksheet_data] = student_marks
+          @examination_types.each do |type|
+            response_hash[type.name] = student_marks.where(examination_type: type.name)
+                                                    .joins(:subject)
+                                                    .pluck('subjects.name', :marks)
+                                                    .to_h
+          end
+          response << response_hash
         end
 
-        success_response({ data: { marksheet_data: @students } })
+        success_response({ data: { marksheet_data: response } })
       end
 
       private

@@ -12,8 +12,14 @@ class StudentMark < ApplicationRecord
   validate :marks_within_maximum_marks
 
   def as_json(options = {})
-    options[:methods] ||= %i[student_name student_enrollment_number subject_name subject_code]
+    options[:methods] ||= %i[student_name student_enrollment_number subject_name subject_code type_wise_data]
     super(options)
+  end
+
+  def type_wise_data
+    ExaminationType.all.map do |type|
+      { type.name => examination_type == type.name ? marks : '-' }
+    end
   end
 
   def marks_within_maximum_marks
