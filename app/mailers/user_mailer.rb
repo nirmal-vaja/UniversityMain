@@ -20,7 +20,7 @@ class UserMailer < ApplicationMailer
   def send_marks_entry_notification(user, opts = {})
     @user = user
     @role_name = opts[:role_name]
-    @url = opts[:url] + "?d=#{@user.secure_id}"
+    @url = opts[:url]
     @subject_names = opts[:subject_names]
 
     if @user.has_role?(@role_name)

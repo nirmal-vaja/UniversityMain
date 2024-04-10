@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_26_082529) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_29_102358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -102,15 +102,23 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_26_082529) do
     t.index ["user_id"], name: "index_configs_on_user_id"
   end
 
+  create_table "configured_divisions", force: :cascade do |t|
+    t.bigint "configured_semester_id", null: false
+    t.bigint "division_id", null: false
+    t.text "subject_ids"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["configured_semester_id"], name: "index_configured_divisions_on_configured_semester_id"
+    t.index ["division_id"], name: "index_configured_divisions_on_division_id"
+  end
+
   create_table "configured_semesters", force: :cascade do |t|
     t.bigint "semester_id", null: false
-    t.bigint "division_id", null: false
     t.text "subject_ids"
     t.bigint "config_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["config_id"], name: "index_configured_semesters_on_config_id"
-    t.index ["division_id"], name: "index_configured_semesters_on_division_id"
     t.index ["semester_id"], name: "index_configured_semesters_on_semester_id"
   end
 
@@ -155,7 +163,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_26_082529) do
     t.bigint "subject_id", null: false
     t.string "academic_year"
     t.date "examination_date"
-    t.integer "day", default: 0
+    t.integer "day", default: 3
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["branch_id"], name: "index_exam_time_tables_on_branch_id"
@@ -385,8 +393,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_26_082529) do
     t.bigint "subject_id", null: false
     t.bigint "student_id", null: false
     t.string "marks"
-    t.boolean "locked"
-    t.boolean "published"
+    t.boolean "locked", default: false
+    t.boolean "published", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["branch_id"], name: "index_student_marks_on_branch_id"
@@ -531,8 +539,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_26_082529) do
   add_foreign_key "configs", "branches"
   add_foreign_key "configs", "courses"
   add_foreign_key "configs", "users"
+  add_foreign_key "configured_divisions", "configured_semesters"
+  add_foreign_key "configured_divisions", "divisions"
   add_foreign_key "configured_semesters", "configs"
-  add_foreign_key "configured_semesters", "divisions"
   add_foreign_key "configured_semesters", "semesters"
   add_foreign_key "contact_details", "students"
   add_foreign_key "divisions", "semesters"

@@ -14,7 +14,7 @@ class MarksEntry < ApplicationRecord
   after_update :sanitize_data, if: :no_marks_entry_subjects_found
 
   def as_json(options = {})
-    options[:methods] = %i[faculty_name faculty_designation faculty_department subjects subject_ids]
+    options[:methods] = %i[faculty_name faculty_designation faculty_department subjects division subject_ids]
     super(options)
   end
 
@@ -41,8 +41,6 @@ class MarksEntry < ApplicationRecord
   end
 
   def sanitize_data
-    user.configs.destroy_all
-    user.remove_role_without_deletion('Marks Entry')
     destroy
   end
 end

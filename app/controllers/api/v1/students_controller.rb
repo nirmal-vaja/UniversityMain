@@ -39,8 +39,16 @@ module Api
         end
       end
 
+      def current_course_students
+        @course = current_user.course
+        @students = Student.where(course_id: @course.id)
+
+        success_response({ data: { students: @students } })
+      end
+
       def find_students_to_enter_marks
-        @students = Student.where(student_params).includes(:student_marks).where(student_marks: { id: nil })
+        @students = Student.where(student_params)
+                           .where.not(id: StudentMark.where(student_marks_params).select(:student_id))
         success_response({ data: { students: @students } })
       end
 
@@ -56,6 +64,11 @@ module Api
         params.require(:student).permit(:name, :enrollment_number, :course_id, :branch_id, :semester_id, :division_id,
                                         :father_name, :mother_name, :date_of_birth, :birth_place, :religion,
                                         :caste, :blood_group, :gender).to_h
+      end
+
+      def student_marks_params
+        params.require(:student).permit(:examination_name, :examination_time, :examination_type, :academic_year,
+                                        :subject_id).to_h
       end
 
       def student_block_params

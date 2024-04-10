@@ -60,7 +60,13 @@ module Api
         superadmin_collection = User.with_role(:super_admin)
         return success_response({ data: { super_admin: superadmin_collection.first } }) if superadmin_collection.any?
 
+        if Doorkeeper::Application.count.zero?
+          Doorkeeper::Application.create(name: params[:university_name], redirect_uri: '', scopes: '',
+                                         confidential: false)
+        end
+
         user = User.new(user_params)
+
         if user.save
           perform_user_specific_tasks(user)
           success_response(success_options)

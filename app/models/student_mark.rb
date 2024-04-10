@@ -12,7 +12,7 @@ class StudentMark < ApplicationRecord
   validate :marks_within_maximum_marks
 
   def as_json(options = {})
-    options[:methods] ||= %i[student_name student_enrollment_number]
+    options[:methods] ||= %i[student_name student_enrollment_number subject_name subject_code]
     super(options)
   end
 
@@ -22,6 +22,14 @@ class StudentMark < ApplicationRecord
     return unless marks.present? && (marks != 'Ab' && marks != 'ZR') && marks.to_i > type.maximum_marks
 
     errors.add(:marks, "cannot exceed maximum marks for #{examination_type}")
+  end
+
+  def subject_name
+    subject.name
+  end
+
+  def subject_code
+    subject.code
   end
 
   def student_name

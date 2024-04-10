@@ -24,6 +24,15 @@ class Student < ApplicationRecord
   has_one :parent_detail, dependent: :destroy
   has_one :guardian_detail, dependent: :destroy
 
+  def as_json(options = {})
+    options[:methods] ||= %i[semester_name]
+    super(options)
+  end
+
+  def semester_name
+    semester.name
+  end
+
   def update_attributes_if_changes(new_attributes)
     assign_attributes(new_attributes)
 

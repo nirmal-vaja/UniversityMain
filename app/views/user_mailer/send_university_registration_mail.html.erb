@@ -1,27 +1,3 @@
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  </head>
-  <body>
-    <h2>Successful University Registration</h2>
-    <p>Greetings!</p>
-    <p>We hope this email finds you well. We are excited to share the news of a successful university registration on our platform:</p>
-    <hr>
-    <table>
-      <tr>
-        <td style="font-weight: bold;">University Name:</td>
-        <td><%= @university %></td>
-      </tr>
-      <tr>
-        <td colspan="2" style="font-weight: bold;"> <%= link_to "Click here", @url + "/resetPassword?reset_password_token=#{@token}" %> to get started. </td>
-      </tr>
-    </table>
-    <hr>
-    <p>We believe that this new addition will strengthen our community and provide more opportunities for collaboration and growth.</p>
-    <p>If you have any further inquiries or need additional information, please don't hesitate to reach out.</p>
-    <p>Thank you for your continued support!</p>
-  </body>
-</html>
 <!DOCTYPE html>
 <html lang="en">
   <head>

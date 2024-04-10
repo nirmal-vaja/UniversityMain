@@ -3,8 +3,9 @@
 module Api
   module V1
     # app/controllers/api/v1/student_marks_controller.rb
-    class StudentMarksController < ApiController
+    class StudentMarksController < ApiController # rubocop:disable Metrics/ClassLength
       before_action :set_student_mark, only: %i[update destroy]
+      before_action :find_student_marks_from_subject_id, only: %i[lock_marks unlock_marks]
 
       def index
         @student_marks = StudentMark.where(student_marks_params)
@@ -36,15 +37,112 @@ module Api
         end
       end
 
-      def data_for_lock_marks
-        
+      def retrieve_unique_subjects_for_lock_marks
+        @subjects = Subject.joins(:student_marks).where(student_marks: student_marks_params).distinct
+        @subjects = @subjects.map do |subject|
+          student_marks = StudentMark.where(student_marks_params).where(subject_id: subject.id)
+          subject.attributes.merge({
+                                     locked: student_marks.pluck(:locked).include?(true)
+                                   })
+        end
+        success_response({ data: { subjects: @subjects } })
+      end
+
+      def retrieve_unique_subjects_for_unlock_marks
+        @subjects = Subject.joins(:student_marks).where(student_marks: student_marks_params.merge(locked: true)).distinct
+        @actual_subjects = Subject.where(student_marks_params.slice(:course_id, :branch_id, :semester_id))
+        subjects_ids = @subjects.map(&:id)
+        @publish_status = StudentMark.where(subject_id: subjects_ids).first.published
+        success_response({ data: { subjects: @subjects,
+                                   eligible_for_publish_marks: @actual_subjects.length == @subjects.length,
+                                   published: @publish_status } })
+      end
+
+      def lock_marks
+        if @student_marks.update_all(locked: true)
+          success_response({ message: 'Marks has been locked' })
+        else
+          error_response({ error: 'Error locking marks, please try again' })
+        end
+      end
+
+      def unlock_marks
+        if @student_marks.update_all(locked: false)
+          success_response({ message: 'Marks has been unlocked' })
+        else
+          error_response({ error: 'Error unlocking marks, please try again' })
+        end
+      end
+
+      def publish_marks
+        @student_marks = StudentMark.where(student_marks_params)
+        if @student_marks.update_all(published: true)
+          success_response({ message: 'Marks has been published' })
+        else
+          error_response({ error: "Can't publish marks, please try again!" })
+        end
+      end
+
+      def unpublish_marks
+        @student_marks = StudentMark.where(student_marks_params)
+
+        if @student_marks.update_all(published: false)
+          success_response({ message: 'Marks has been unpublished' })
+        else
+          error_response({ error: "Can't unpublish marks, please try again!" })
+        end
+      end
+
+      def marksheet_data
+        @students = Student.where(sanitized_marksheet_params.slice(:course_id, :branch_id, :semester_id, :division_id))
+
+        @student_marks = StudentMark.where(sanitized_marksheet_params)
+
+        @students = @students&.map do |student|
+          student_marks = @student_marks.where(student_id: student.id)
+          student.attributes.merge(
+            {
+              semester_name: student.semester.name,
+              marksheet_data: student_marks
+            }
+          )
+        end
+
+        success_response({ data: { marksheet_data: @students } })
       end
 
       private
 
+      def find_student_marks_from_subject_id
+        @student_marks = StudentMark.where(student_marks_params).where(subject_id: params[:id])
+        return @student_marks if @student_marks
+
+        error_response({ error: 'No studentmarks found for the selected filter, so you cant perform any actions.' })
+      end
+
       def set_student_mark
         @student_mark = StudentMark.find_by_id(params[:id])
         success_response({ message: 'No student marks found for the selected filter' }) unless @student_mark
+      end
+
+      def marksheet_params
+        params.require(:student_mark).permit(
+          :examination_name,
+          :examination_time,
+          :academic_year,
+          :course_id,
+          :branch_id,
+          :semester_id,
+          :division_id,
+          examination_types: {}
+        ).to_h
+      end
+
+      def sanitized_marksheet_params
+        new_marksheet_params = marksheet_params.except(:examination_types)
+
+        new_marksheet_params[:examination_type] = marksheet_params[:examination_types].values
+        new_marksheet_params
       end
 
       def student_marks_params # rubocop:disable Metrics/MethodLength
@@ -60,8 +158,9 @@ module Api
           :division_id,
           :subject_id,
           :student_id,
-          :marks
-        )
+          :marks,
+          :locked
+        ).to_h
       end
     end
   end

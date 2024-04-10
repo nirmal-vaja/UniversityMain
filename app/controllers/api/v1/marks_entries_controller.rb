@@ -11,47 +11,48 @@ module Api
         success_response({ data: { marks_entries: @marks_entries } })
       end
 
-      def create # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-        @marks_entry = MarksEntry.new(sanitized_marks_entry_params)
+      def create
+        ActiveRecord::Base.transaction do
+          @marks_entry = MarksEntry.new(sanitized_marks_entry_params)
+          @marks_entry.save!
 
-        begin
-          ActiveRecord::Base.transaction do
-            raise ActiveRecord::Rollback unless @marks_entry.save
+          @configuration = @marks_entry.user.configs.find_or_initialize_by(config_params)
+          @configuration.save!
 
-            @configurations = Config.find_or_initialize_by(config_params)
-            raise ActiveRecord::Rollback unless @configurations.save
+          @configured_semesters = @configuration.configured_semesters.find_or_initialize_by(configured_semester_params)
+          @configured_semesters.subject_ids |= @marks_entry.subjects.pluck(:id)
+          @configured_semesters.save!
 
-            @configured_semesters = @configurations.configured_semesters.find_or_initialize_by(configured_semester_params) # rubocop:disable Layout/LineLength
-            @configured_semesters.subject_ids = @marks_entry.subjects.pluck(:id)
-            raise ActiveRecord::Rollback if @configured_semesters.subject_ids.empty? || !@configured_semesters.save
+          @configured_divisions = @configured_semesters.configured_divisions.find_or_initialize_by(configured_division_params)
+          @configured_divisions.subject_ids = @marks_entry.subjects.pluck(:id)
+          @configured_divisions.save!
 
-            @marks_entry.user.add_role('Marks Entry') unless @marks_entry.user.has_role?('Marks Entry')
-            send_user_mail
-            success_response({ message: I18n.t('marks_entries.create') })
-          end
-        rescue ActiveRecord::Rollback => e
-          error_response({ error: "Transaction rolled back: #{e.message}" })
-        rescue StandardError => e
-          error_response({ error: e.message })
+          setup_user_role_and_mail
+
+          success_response({ message: I18n.t('marks_entries.create') })
         end
+      rescue ActiveRecord::RecordInvalid => e
+        error_response({ error: e.message })
+      rescue StandardError => e
+        error_response({ error: e.message })
       end
 
-      def update # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-        raise ActiveRecord::Rollback unless @marks_entry.update(sanitized_marks_entry_params)
+      def update
+        ActiveRecord::Base.transaction do
+          @marks_entry.update!(marks_entry_params_for_update)
+          @configuration = @marks_entry.user.configs.find_by(config_params)
+          @configured_semesters = @configuration.configured_semesters.find_by(configured_semester_params)
+          @configured_divisions = @configured_semesters.configured_divisions.find_by(configured_division_params)
 
-        send_user_mail
-
-        @configurations = @mark_entry.user.configs&.where(config_params)
-
-        @configurations&.each do |config|
-          @configured_semesters = config.configured_semesters.find_by(configured_semester_params)
-
-          @configured_semesters.update(subject_ids: @marks_entry.subjects.pluck(:id)) if @configured_semesters.present?
+          if @marks_entry.subjects.empty?
+            handle_empty_subjects
+          else
+            update_configured_semesters_and_divisions
+          end
+          success_response({ message: I18n.t('marks_entries.update') })
         end
-
-        success_response({ message: I18n.t('marks_entries.update') })
-      rescue ActiveRecord::Rollback => e
-        error_response({ error: "Transaction rolled back: #{e.message}" })
+      rescue ActiveRecord::RecordInvalid => e
+        error_response({ error: e.message })
       rescue StandardError => e
         error_response({ error: e.message })
       end
@@ -65,6 +66,27 @@ module Api
       end
 
       private
+
+      def setup_user_role_and_mail
+        @marks_entry.user.add_role('Marks Entry') unless @marks_entry.user.has_role?('Marks Entry')
+        send_user_mail
+      end
+
+      def handle_empty_subjects
+        @configured_divisions&.destroy
+        return unless @configured_semesters.configured_divisions.empty?
+
+        @configured_semesters.destroy
+        @configuration.destroy if @configuration.configured_semesters.empty?
+      end
+
+      def update_configured_semesters_and_divisions
+        @configured_semesters.subject_ids |= @marks_entry.subjects.pluck(:id)
+        @configured_semesters.save!
+
+        @configured_divisions.subject_ids = @marks_entry.subjects.pluck(:id)
+        @configured_divisions.save!
+      end
 
       def set_marks_entry
         @marks_entry = MarksEntry.find_by_id(params[:id])
@@ -111,8 +133,27 @@ module Api
         )
       end
 
+      def marks_entry_params_for_update
+        params.require(:marks_entry).permit(
+          :examination_name,
+          :examination_time,
+          :examination_type,
+          :academic_year,
+          :course_id,
+          :branch_id,
+          :semester_id,
+          :division_id,
+          :user_id,
+          subject_ids: []
+        ).to_h
+      end
+
       def configured_semester_params
-        marks_entry_params.slice(:semester_id, :division_id)
+        marks_entry_params.slice(:semester_id)
+      end
+
+      def configured_division_params
+        marks_entry_params.slice(:division_id)
       end
     end
   end

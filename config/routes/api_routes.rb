@@ -51,6 +51,7 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
     end
     resources :students do
       collection do
+        get :current_course_students
         get :find_students_to_enter_marks
         get :unassigned_students
       end
@@ -93,6 +94,18 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
     end
 
     resources :marks_entries
-    resources :student_marks
+    resources :student_marks do
+      member do
+        post :lock_marks
+        post :unlock_marks
+      end
+      collection do
+        get :marksheet_data
+        post :publish_marks
+        post :unpublish_marks
+        get :retrieve_unique_subjects_for_lock_marks
+        get :retrieve_unique_subjects_for_unlock_marks
+      end
+    end
   end
 end
