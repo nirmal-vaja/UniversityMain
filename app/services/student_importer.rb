@@ -61,18 +61,22 @@ class StudentImporter
 
     course = courses_cache[course_name] ||= Course.find_by(name: course_name)
 
-    return { error: "#{course_name} not found" } unless course
+    return { error: "#{course_name} not found" } unless course.present?
 
     branch = branches_cache["#{course_name}_#{branch_name}"] ||= course.branches.find_by(name: branch_name)
-    return { error: "#{branch_name} not found in #{course_name}" } unless branch
+    return { error: "#{branch_name} not found in #{course_name}" } unless branch.present?
 
     semester = semesters_cache["#{course_name}_#{branch_name}_#{semester_number}"] ||= branch.semesters.find_by(number: semester_number) # rubocop:disable Layout/LineLength
 
-    return { error: "Semester - #{semester_number} not found in #{course_name} #{branch_name}" } unless semester
+    unless semester.present?
+      return { error: "Semester - #{semester_number} not found in #{course_name} #{branch_name}" }
+    end
 
     division = divisions_cache["#{course_name}_#{branch_name}_#{semester_number}_#{division_name}"] ||= semester.divisions.find_by(name: division_name) # rubocop:disable Layout/LineLength
 
-    return { error: "#{division_name} not found in #{semester.name} in #{course_name} #{branch_name}" } unless division
+    unless division.present?
+      return { error: "#{division_name} not found in #{semester.name} in #{course_name} #{branch_name}" }
+    end
 
     courses_cache[course_name] = course
     branches_cache["#{course_name}_#{branch_name}"] = branch
@@ -86,10 +90,10 @@ class StudentImporter
     student = Student.find_by(
       name: data['name'],
       enrollment_number: data['enrollment_number'].to_i.to_s,
-      course:,
-      branch:,
-      semester:,
-      division:,
+      course_id: course.id,
+      branch_id: branch.id,
+      semester_id: semester.id,
+      division_id: division.id,
       fees_paid: data['fees_paid'].to_i.zero? ? false : true,
       gender: data['gender'].downcase,
       father_name: data["father's_full_name"],
