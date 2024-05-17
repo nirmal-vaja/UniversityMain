@@ -56,7 +56,7 @@ Rails.application.configure do # rubocop:disable Metrics/BlockLength
   config.active_record.verbose_query_logs = true
 
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = { host: 'localhost', port: '3000' }
+  config.action_mailer.default_url_options = { host: 'localhost', port: '4000' }
   # SMTP settings for gmail
   config.action_mailer.smtp_settings = {
     address: 'smtp.gmail.com',

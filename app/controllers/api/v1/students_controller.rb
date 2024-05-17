@@ -27,13 +27,13 @@ module Api
 
       def unassigned_students
         page = params[:page] || 1
-        items_per_page = params[:items_per_page]
+        items_per_page = ExaminationType.find_by_name(params[:student][:examination_type]).max_students_per_block
 
         unassigned_students = fetch_unassigned_students
 
         if unassigned_students.present?
           @pagy, @students = pagy(unassigned_students, page:, items: items_per_page)
-          success_response(data: { students: @students, page: pagy_metadata(@pagy) })
+          success_response(data: { students: @students, pagy: @pagy, items_per_page: })
         else
           error_response(error: 'You have already assigned students.')
         end
@@ -107,7 +107,8 @@ module Api
       end
 
       def assigned_student_ids
-        StudentBlock.where(student_block_params).pluck(:student_id).uniq
+        block_ids = ExaminationBlock.where(student_block_params).pluck(:id)
+        StudentBlock.where(examination_block_id: block_ids).pluck(:student_id).uniq
       end
     end
   end

@@ -62,6 +62,15 @@ namespace :api, defaults: { format: :json } do # rubocop:disable Metrics/BlockLe
       end
     end
 
+    resources :examination_blocks do
+      member do
+        post :assign_students
+      end
+      collection do
+        get :available_blocks
+      end
+    end
+
     resources :examination_names
     resources :examination_times
     resources :examination_types

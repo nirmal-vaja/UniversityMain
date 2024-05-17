@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_29_102358) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_21_193857) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -369,14 +369,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_29_102358) do
   create_table "student_blocks", force: :cascade do |t|
     t.bigint "examination_block_id", null: false
     t.bigint "student_id", null: false
-    t.string "examination_name"
-    t.string "academic_year"
-    t.bigint "course_id", null: false
-    t.bigint "branch_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["branch_id"], name: "index_student_blocks_on_branch_id"
-    t.index ["course_id"], name: "index_student_blocks_on_course_id"
     t.index ["examination_block_id"], name: "index_student_blocks_on_examination_block_id"
     t.index ["student_id"], name: "index_student_blocks_on_student_id"
   end
@@ -571,8 +565,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_29_102358) do
   add_foreign_key "other_duties", "users"
   add_foreign_key "parent_details", "students"
   add_foreign_key "semesters", "branches"
-  add_foreign_key "student_blocks", "branches"
-  add_foreign_key "student_blocks", "courses"
   add_foreign_key "student_blocks", "examination_blocks"
   add_foreign_key "student_blocks", "students"
   add_foreign_key "student_marks", "branches"

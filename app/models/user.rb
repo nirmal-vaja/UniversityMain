@@ -10,8 +10,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'is not a valid email address' }
-  validates :mobile_number,
-            format: { with: /\A(?:\+?\d{1,3}[-.●]?)?\d{9,15}\z/, message: 'is not a valid mobile number' }
+  # validates :mobile_number,
+            # format: { with: /\A(?:\+?\d{1,3}[-.●]?)?\d{9,15}\z/, message: 'is not a valid mobile number' }
 
   # Associations
   belongs_to :course, optional: true

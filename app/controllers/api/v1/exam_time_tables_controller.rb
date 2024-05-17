@@ -87,17 +87,17 @@ module Api
 
       # Move this code to blocks_controller.rb
       # def available_blocks
-      #   @blocks = Block
-      #             .includes(:students, :student_blocks)
-      #             .where(block_params)
-      #             .having_available_capacity
-      #             .order(name: :asc)
+        # @blocks = Block
+        #           .includes(:students, :student_blocks)
+        #           .where(block_params)
+        #           .having_available_capacity
+        #           .order(name: :asc)
 
-      #   if @blocks.present?
-      #     success_response({ data: { blocks: @blocks } })
-      #   else
-      #     error_response({ error: 'No available blocks found' })
-      #   end
+        # if @blocks.present?
+        #   success_response({ data: { blocks: @blocks } })
+        # else
+        #   error_response({ error: 'No available blocks found' })
+        # end
       # end
 
       private
