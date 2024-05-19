@@ -119,11 +119,10 @@ class StudentImporter
     student = Student.find_or_initialize_by(enrollment_number: data['enrollment_number'].to_i.to_s) do |s|
       s.assign_attributes(
         name: data['name'],
-        enrollment_number: data['enrollment_number'],
-        course:,
-        branch:,
-        semester:,
-        division:,
+        course_id: course.id,
+        branch_id: branch.id,
+        semester_id: semester.id,
+        division_id: division.id,
         fees_paid: data['fees_paid'].to_i.zero? ? false : true,
         gender: data['gender'].downcase,
         father_name: data["father's_full_name"],
