@@ -83,6 +83,10 @@ module Api
         success_response({ data: { users: @faculties } })
       end
 
+      def download_excel
+        
+      end
+
       private
 
       def clear_metadata_if_needed(number_of_supervisions)

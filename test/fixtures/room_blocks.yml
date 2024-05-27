@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  examination_room: one
+  examination_block: one
+  examination_name: MyString
+  examination_type: MyString
+  academic_year: MyString
+  course: one
+  branch: one
+  examination_date: MyString
+  examination_time: MyString
+
+two:
+  examination_room: two
+  examination_block: two
+  examination_name: MyString
+  examination_type: MyString
+  academic_year: MyString
+  course: two
+  branch: two
+  examination_date: MyString
+  examination_time: MyString

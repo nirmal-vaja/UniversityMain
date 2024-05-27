@@ -13,6 +13,9 @@ class ExaminationBlock < ApplicationRecord
   has_many :student_blocks, dependent: :destroy
   has_many :students, through: :student_blocks
 
+  has_many :room_blocks, dependent: :destroy
+  has_many :examination_rooms, through: :room_blocks
+
   validate :validate_capacity
 
   # after_save :update_number_of_students
@@ -21,6 +24,17 @@ class ExaminationBlock < ApplicationRecord
     left_joins(:students)
       .group('examination_blocks.id')
       .having('COUNT(students.id) < examination_blocks.capacity OR COUNT(students.id) IS NULL')
+  }
+
+  scope :with_students_and_rooms, lambda {
+    joins(:students, :examination_rooms)
+      .distinct
+  }
+
+  scope :with_students_and_no_rooms, lambda {
+    left_outer_joins(:students, :examination_rooms)
+      .group('examination_blocks.id')
+      .having('COUNT(students.id) > 0 AND COUNT(examination_rooms.id) = 0')
   }
 
   def as_json(options = {})

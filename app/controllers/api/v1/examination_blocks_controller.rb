@@ -4,7 +4,7 @@ module Api
   module V1
     # app/controllers/api/v1/blocks_controller.rb
     class ExaminationBlocksController < ApiController
-      before_action :set_block, only: %i[assign_students update]
+      before_action :set_block, only: %i[assign_students update delete_all_students assign_room]
 
       def index
         @blocks = ExaminationBlock.joins(:subject)
@@ -24,9 +24,54 @@ module Api
         success_response({ data: { blocks: @blocks } })
       end
 
+      def available_blocks_to_assign_room
+        @blocks = ExaminationBlock
+                  .with_students_and_no_rooms
+                  .where(block_params)
+
+        success_response({ data: { blocks: @blocks } })
+      end
+
+      def blocks_for_blocks_to_room
+        @blocks = ExaminationBlock
+                  .with_students_and_rooms
+                  .where(block_params)
+
+        @blocks = @blocks.map do |block|
+          examination_room = block.examination_rooms.first
+          block.attributes.merge({
+                                   room: examination_room,
+                                   room_number: examination_room.room_number
+                                 })
+        end
+
+        success_response({ data: { blocks: @blocks } })
+      end
+
+      def assign_room
+        room_block = @block.room_blocks.new(
+          examination_name: block_params[:examination_name],
+          examination_time: block_params[:examination_time],
+          examination_type: block_params[:examination_type],
+          examination_date: block_params[:examination_date],
+          academic_year: block_params[:academic_year],
+          course_id: block_params[:course_id],
+          branch_id: block_params[:branch_id],
+          examination_room_id: block_params[:room_id],
+          occupied: @block.number_of_students
+        )
+
+        if room_block.save
+          success_response({ message: 'Block has been assigned successfully.' })
+        else
+          error_response({ error: room_block.errors.full_messages.join(', ') })
+        end
+      end
+
       def update
         @block.students.clear
         if @block.student_ids << params[:student_ids]
+          @block.update(number_of_students: @block.students.count)
           success_response({ message: 'Operation successful' })
         else
           error_response({ error: @block.errors.full_messages.join(', ') })
@@ -50,6 +95,23 @@ module Api
         end
       end
 
+      def delete_all_students
+        if @block.student_blocks.destroy_all
+          @block.update(number_of_students: 0)
+          success_response({ message: 'All students have been unassigned from the block successfully.' })
+        else
+          error_response({ error: @block.errors.full_messages.join(', ') })
+        end
+      end
+
+      def delete_all_rooms
+        if @block.room_blocks.destroy_all
+          success_response({ message: 'Block has been removed from the room successfully.' })
+        else
+          error_response({ error: @block.errors.full_messages.join(', ') })
+        end
+      end
+
       private
 
       def examination_block_params
@@ -61,7 +123,8 @@ module Api
           :course_id,
           :branch_id,
           :examination_date,
-          student_ids: []
+          student_ids: [],
+          room_ids: []
         )
       end
 
@@ -91,9 +154,9 @@ module Api
           :examination_type,
           :examination_time,
           :examination_date,
-          :subject_id,
           :course_id,
-          :branch_id
+          :branch_id,
+          :room_id
         ).to_h
       end
     end

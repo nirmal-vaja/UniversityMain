@@ -95,3 +95,6 @@ gem 'roo', '~> 2.8'
 
 # Pagination Gem
 gem 'pagy'
+
+# Use to create the excel file
+gem 'axlsx', '3.0.0.pre'
