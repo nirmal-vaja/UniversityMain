@@ -31,6 +31,7 @@ class StudentImporter
       result = process_student_data(student_data, courses_cache, branches_cache, semesters_cache, divisions_cache)
 
       return result if result.is_a?(Hash) && result.key?(:error)
+
       next if result.is_a?(Hash) && result.key?(:skipped)
     end
 
@@ -46,6 +47,7 @@ class StudentImporter
   def process_student_data(data, courses_cache, branches_cache, semesters_cache, divisions_cache)
     course, branch, semester, division = find_course_branch_semester_and_division(data, courses_cache, branches_cache,
                                                                                   semesters_cache, divisions_cache)
+    return course if course.is_a?(Hash) && course.key?(:error)
 
     existing_student = find_existing_student(data, course, branch, semester, division)
     return { student: existing_student, skipped: true } if existing_student

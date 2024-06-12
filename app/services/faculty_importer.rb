@@ -36,6 +36,8 @@ class FacultyImporter
   def process_faculty_data(data, courses_cache, branches_cache)
     course, branch = find_course_and_branch(data, courses_cache, branches_cache)
 
+    return course if course.is_a?(Hash) && course.key?(:error)
+
     existing_user = find_existing_user(data, course, branch)
     return { user: existing_user, skipped: true } if existing_user
 
