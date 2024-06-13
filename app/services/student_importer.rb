@@ -107,10 +107,8 @@ class StudentImporter
       blood_group: data['blood_group']
     )
 
-    contact_detail = student&.contact_detail&.find_by(
-      mobile_number: data['mobile_number'].to_i,
-      personal_email_address: data['email_address']
-    )
+    contact_detail = Student.joins(:contact_detail).where(mobile_number: data['mobile_number'].to_i,
+                                                          personal_email_address: data['email_address'], student_id: student.id)&.contact_detail
 
     return nil unless contact_detail
 
